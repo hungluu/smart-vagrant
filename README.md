@@ -18,6 +18,8 @@ A LAMP stack with original Ubuntu box for Vagrant that is **easy to hack arround
 ```shell
 vagrant up --provision
 ```
+Wait for everything loaded then navigate to [http://1.1.0.254](http://1.1.0.254) to see if it works
+
 To restart the VM
 ```shell
 vagrant reload
