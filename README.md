@@ -6,6 +6,13 @@ A LAMP stack with original Ubuntu box for Vagrant that is **easy to hack arround
 
 *Xdebug is enabled by default*
 
+**Default state:**
+- Ubuntu 14.04
+- Apache 2.4.7
+- PHP 5.6
+- Xdebug
+- Postgresql 9.5
+
 ### 1. Run
 
 ```shell
