@@ -1,0 +1,40 @@
+<!-- Dumday (c) 2017 -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <style media="screen">
+    html, body {
+      width: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    .cheer {
+      width: auto;
+      overflow: hidden;
+      position: relative;
+      text-align: center;
+      font-size: 30px;
+      font-weight: bold;
+    }
+  </style>
+  <link href="http://vjs.zencdn.net/5.16.0/video-js.css" rel="stylesheet">
+  <!-- If you'd like to support IE8 -->
+  <script src="http://vjs.zencdn.net/ie8/1.1.2/videojs-ie8.min.js"></script>
+  <body>
+    <div class="cheer">
+      <video style="margin:0 auto" class="video-js" autoplay loop preload="auto" width="320" height="240" data-setup="{}">
+        <source src="cheer.ogv" type='video/ogg'>
+        <p class="vjs-no-js">
+          To view this video please enable JavaScript, and consider upgrading to a web browser that
+          <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
+        </p>
+      </video>
+      <br>
+      YEAH. IT WORKS!
+    </div>
+    <script src="http://vjs.zencdn.net/5.16.0/video.js"></script>
+  </body>
+</html>
