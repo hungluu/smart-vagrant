@@ -3,6 +3,7 @@
 #======================================
 # Lamp-Vagrant
 # @author : HR
+# @version : 0.0.1
 # @copyright : Dumday (c) 2017
 #======================================
 require "yaml"
