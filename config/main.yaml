@@ -3,12 +3,6 @@ box: "ubuntu/trusty64"
 box_check_update : false
 # Provider settings
 provider: "virtualbox"
-providers:
-  virtualbox:
-    # Display the VirtualBox GUI when booting the machine
-    gui: false
-    # Customize the amount of memory on the VM:
-    memory: 1024
 repositories:
   - "ppa:ondrej/php"
 dependencies:

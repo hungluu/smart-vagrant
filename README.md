@@ -52,6 +52,7 @@ All configuration should be placed in `config/main.yaml` file
 
 -	All sites settings are located in `config/apache2/sites`
 -	Custom apache settings should be placed in `config/apache2/lampVagrant.conf`
+- All provider settings should be edited in `config/Providers.rb`
 
 Other hack-around can be done with a little knowlegde of Vagrant, can be found in their [Vagrant document](https://www.vagrantup.com/docs/).
 
