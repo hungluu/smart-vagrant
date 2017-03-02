@@ -43,8 +43,8 @@ All configuration should be placed in `config/main.yaml` file
 **Copy:** is a list of file to be copied to VM, all those files should locates in `config/copy` folder. Local file path should represent the actual file path in VM machine. Example: `config/copy/etc/php5/php.ini` in local machine will be copied to `/etc/php5/php.ini` in VM.
 
 **IP settings:**
-- ipPrefix: is the first part of ips, `127.0.0.1` has prefix `127.0.0`
-- ipPostfixes: is a list of second parts of ips, `127.0.0.1` has postfix `1`
+- ip_prefix: is the first part of ips, `127.0.0.1` has prefix `127.0.0`
+- private_network_ips: is a list of second parts of ips, `127.0.0.1` has postfix `1`
 
 **Synced folders:** Is a list of folders from local machine to be synced with VM
 

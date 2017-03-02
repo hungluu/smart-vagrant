@@ -5,17 +5,16 @@
 # @author : HR
 # @copyright : Dumday (c) 2017
 #======================================
-require 'yaml';
+require "yaml"
+require File.join(".", "include", "CommandBuilder")
+require File.join(".", "config", "providers")
 
 # All Vagrant configuration is done below. The "2" in Vagrant.configure
-# configures the configuration version (we support older styles for
-# backwards compatibility). Please don't change it unless you know what
-# you're doing.
-
+# configures the configuration version
 Vagrant.configure("2") do |config|
   # Load configuration
-  settings = YAML::load_file("./config/main.yaml")
-  ipPrefix = settings["ipPrefix"]
+  settings = YAML::load_file(File.join(".", "config", "main.yaml"))
+  ip_prefix = settings["ip_prefix"]
 
   # The most common configuration options are documented and commented below.
   # For a complete reference, please see the online documentation at
@@ -28,7 +27,7 @@ Vagrant.configure("2") do |config|
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
   # `vagrant box outdated`. This is not recommended.
-  config.vm.box_check_update = settings["boxCheckUpdate"]
+  config.vm.box_check_update = settings["box_check_update"]
 
   # Create a forwarded port mapping which allows access to a specific port
   # within the machine from a port on the host machine. In the example below,
@@ -37,13 +36,13 @@ Vagrant.configure("2") do |config|
 
   # Create a private network, which allows host-only access to the machine
   # using a specific IP.
-  config.vm.network "private_network", ip: "#{ipPrefix}.254"
+  config.vm.network "private_network", ip: "#{ip_prefix}.254"
 
   # Using ip
-  ipPostfixes = settings["ipPostfixes"]
-  ipPostfixes.each do |postFix|
-    ip = "#{ipPrefix}.#{postFix}"
-    puts "* Adding custom ip #{ip}"
+  private_network_ips = settings["private_network_ips"]
+  private_network_ips.each do |ip_last_number|
+    ip = "#{ip_prefix}.#{ip_last_number}"
+    puts "* Using custom private ip #{ip}"
     config.vm.network "private_network", ip: ip
   end
 
@@ -56,24 +55,18 @@ Vagrant.configure("2") do |config|
   # the path on the host to the actual folder. The second argument is
   # the path on the guest to mount the folder. And the optional third
   # argument is a set of non-required options.
-  config.vm.synced_folder "./config", "/var/lampVagrant/config", :mount_options => [ "dmode=777", "fmode=666" ]
-  syncedFolders = settings["syncedFolders"]
-  syncedFolders.each do |localFolder, vmFolder|
-    config.vm.synced_folder localFolder, vmFolder
-  end
   config.vm.synced_folder "./config/apache2/sites", "/etc/apache2/sites-enabled", :mount_options => [ "dmode=777", "fmode=666" ]
+  synced_folders = settings["synced_folders"]
+  synced_folders.each do |local_path, vm_path|
+    puts "* Using synced folder #{local_path}"
+    config.vm.synced_folder local_path, vm_path
+  end
 
   # Provider-specific configuration so you can fine-tune various
   # backing providers for Vagrant. These expose provider-specific options.
   # Example for VirtualBox:
-  #
-  provider = settings["provider"]
-  providerSettings = settings["providers"][provider]
-  puts "* Selecting provider #{provider}"
-  config.vm.provider provider do |box|
-    box.gui = providerSettings["gui"]
-    box.memory = providerSettings["memory"]
-  end
+  Providers.select(config, settings["provider"])
+
   #
   # View the documentation for the provider you are using for more
   # information on available options.
@@ -85,60 +78,64 @@ Vagrant.configure("2") do |config|
   #   push.app = "YOUR_ATLAS_USERNAME/YOUR_APPLICATION_NAME"
   # end
 
-  # Run special commands
-  config.vm.provision "run-commands", type: "shell" do |s|
-    s.privileged = true
-    commands = [
-      # Fix tty warning
-      "sudo sed -i '/tty/!s/mesg n/tty -s \\&\\& mesg n/' /root/.profile",
-      # Hide apache2 ServerName warning and custom apache2 config
-      "sudo cp /var/lampVagrant/config/apache2/lampVagrant.conf /etc/apache2/conf-available/lampVagrant.conf",
-      "sudo a2enconf lampVagrant 2>/dev/null",
-      "sudo mkdir -p /usr/lib/php5/20131226"
-    ]
-    # Build final command
-    command = commands.reject(&:empty?).join(' && ') + " && echo 'Copying necessary files ...'"
+  command = CommandBuilder.new
 
-    # Copy necessary files
-    copiedFiles = settings["copy"]
-    copiedFiles.each do |copiedFilePath|
-      if File.file?(File.join("config", "copy", copiedFilePath))
-        originalPath = File.join("var", "lampVagrant", "config", "copy", copiedFilePath)
-        command += " && sudo cp /#{originalPath} /#{copiedFilePath}"
-      end
+  #####################
+  # SEPECIAL COMMANDS #
+  #####################
+  # Hide tty warning
+  command.push("sed -i '/tty/!s/mesg n/tty -s \\&\\& mesg n/' /root/.profile")
+  # Enable sites
+  # command.push(command.copy("/vagrant/config/apache2/sites", "/etc/apache2/sites-enabled"))
+  # Custome apache2 config and hide ServerName warning
+  command.push(command.copy("/vagrant/config/apache2/lampVagrant.conf", "/etc/apache2/conf-available/lampVagrant.conf"))
+  command.push("a2enconf lampVagrant 2>/dev/null")
+  # Ensure xdebug directory exists
+  command.push(command.create_folder("/usr/lib/php5/20131226"))
+
+  #####################
+  #     COPY FILES    #
+  #####################
+  command.pushMessage("Copying necessary files ...")
+  copied_files = settings["copy"]
+  copied_files.each do |dest_path|
+    if File.file?(File.join("config", "copy", dest_path))
+      source_path = File.join("vagrant", "config", "copy", dest_path)
+      command.push(command.copy("/#{source_path}", "/#{dest_path}"))
     end
-    s.inline = command
   end
-  # Enable provisioning with a shell script. Additional provisioners such as
-  # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
-  # documentation for more information about their specific syntax and use.
-  config.vm.provision "Provision", type: "shell", path: File.join("provision", "provision.sh")
-  #======================================
-  # Command to install dependencies
-  command = "echo '* Checking dependencies ...'"
-  # Add custom repositories
+
+  command.pushFile(File.join(".", "provision", "provision.sh"))
+  ########################
+  # INSTALL DEPENDENCIES #
+  ########################
   repositories = settings["repositories"]
-  repositories.each do |repositoryName|
-    command += " && echo 'Adding apt-repo #{repositoryName}' && sudo add-apt-repository -y #{repositoryName} 2>/dev/null"
+  repositories.each do |repository_name|
+    command.pushMessage("Adding apt-repo #{repository_name}")
+    command.push("add-apt-repository -y #{repository_name} 2>/dev/null")
   end
+
   # Update packages
-  command += " && echo 'Updating packages, please wait...' && sudo apt-get -y update 2>dev>null"
+  command.pushMessage("Updating packages, please wait...")
+  command.push(command.update)
+  # puts command.update
+  # puts "======"
+  # puts command.get
+  # exit
+
   # Install required packages by scripts
   dependencies = settings["dependencies"]
-  dependencies.each do |packageName|
-    scriptPath = File.join("provision", "scripts", "install_#{packageName}.sh")
-    if File.file?(scriptPath)
-      file = File.open(scriptPath, "rb")
-      command += file.read
-    end
-  end
-  config.vm.provision "install-dependencies", type: "shell" do |s|
-    s.privileged = true
-    # Build final command
-    s.inline = command
+  dependencies.each do |package_name|
+    command.pushFile(File.join(".", "provision", "scripts", "install_#{package_name}.sh"))
   end
   #======================================
   # End Install required packages by scripts
   # Every scripts after done provisioning should be placed in this file
-  config.vm.provision "Post-provision", type: "shell", path: File.join("provision", "provision-post.sh")
+  command.pushFile(File.join(".", "provision", "provision-post.sh"))
+
+  config.vm.provision "run-commands", type: "shell" do |s|
+    s.privileged = true
+    # Build final command
+    s.inline = command.get
+  end
 end

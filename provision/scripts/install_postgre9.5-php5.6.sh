@@ -6,4 +6,3 @@
 # Install php5
 echo "Installing postgresql 9.5 for php 5.6 ..."
 sudo apt-get -y install postgresql-9.5 postgresql-contrib php5.6-pgsql 2>dev>null
-sudo service apache2 restart

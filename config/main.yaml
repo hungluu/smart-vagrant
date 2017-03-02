@@ -1,6 +1,6 @@
 box: "ubuntu/trusty64"
 # Box specifications
-boxCheckUpdate : false
+box_check_update : false
 # Provider settings
 provider: "virtualbox"
 providers:
@@ -14,7 +14,7 @@ repositories:
 dependencies:
   - apache2
   - php5.6
-  - postgres9.5-php5.6
+  - postgre9.5-php5.6
   - xdebug-php5
 copy:
   - etc/apt/sources.list.d/pgdg.list
@@ -22,9 +22,9 @@ copy:
   - usr/lib/php5/20131226/xdebug.so
 #=================
 # IP settings
-ipPrefix: "1.1.0"
-ipPostfixes:
+ip_prefix: "1.1.0"
+private_network_ips:
   - 100
 # Synced folder
-syncedFolders:
+synced_folders:
   "./html" : "/var/www/html"

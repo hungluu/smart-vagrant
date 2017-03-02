@@ -11,4 +11,3 @@ sudo apt-get -y install php5.6 libapache2-mod-php5.6 php5.6-mcrypt 2>dev>null
 echo "Apply php5.6 to apache2 ..."
 sudo a2dismod php5 2>dev>null
 sudo a2enmod php5.6 2>dev>null
-sudo service apache2 restart
