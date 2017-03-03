@@ -1,2 +1,3 @@
 .vagrant
 **/millionet*
+config/main.yaml
