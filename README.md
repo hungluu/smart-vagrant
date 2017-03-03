@@ -29,6 +29,8 @@ To shut down the VM
 vagrant halt
 ```
 
+More syntax can be found in their [Vagrant document](https://www.vagrantup.com/docs/).
+
 Available running sites are
 
 - 1.1.0.254 A generic test site, with php info can be found at [http://1.1.0.254/phpinfo.php](http://1.1.0.254/phpinfo.php)

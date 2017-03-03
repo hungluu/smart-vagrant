@@ -3,12 +3,11 @@
 #======================================
 # Lamp-Vagrant
 # @author : HR
-# @version : 0.0.1
+# @version : 0.0.2
 # @copyright : Dumday (c) 2017
 #======================================
-require "yaml"
-require File.join(".", "include", "CommandBuilder")
-require File.join(".", "config", "providers")
+require_relative "include/LVCommand"
+require_relative "config/providers"
 
 # All Vagrant configuration is done below. The "2" in Vagrant.configure
 # configures the configuration version
@@ -79,60 +78,52 @@ Vagrant.configure("2") do |config|
   #   push.app = "YOUR_ATLAS_USERNAME/YOUR_APPLICATION_NAME"
   # end
 
-  command = CommandBuilder.new
+  command = LVCommand.create_shared_command
 
-  #####################
-  # SEPECIAL COMMANDS #
-  #####################
-  # Hide tty warning
-  command.push("sed -i '/tty/!s/mesg n/tty -s \\&\\& mesg n/' /root/.profile")
-  # Enable sites
-  # command.push(command.copy("/vagrant/config/apache2/sites", "/etc/apache2/sites-enabled"))
-  # Custome apache2 config and hide ServerName warning
-  command.push(command.copy("/vagrant/config/apache2/lampVagrant.conf", "/etc/apache2/conf-available/lampVagrant.conf"))
-  command.push("a2enconf lampVagrant 2>/dev/null")
-  # Ensure xdebug directory exists
-  command.push(command.create_folder("/usr/lib/php5/20131226"))
-
-  #####################
-  #     COPY FILES    #
-  #####################
-  command.pushMessage("Copying necessary files ...")
-  copied_files = settings["copy"]
-  copied_files.each do |dest_path|
-    if File.file?(File.join("config", "copy", dest_path))
-      source_path = File.join("vagrant", "config", "copy", dest_path)
-      command.push(command.copy("/#{source_path}", "/#{dest_path}"))
-    end
-  end
-
-  command.pushFile(File.join(".", "provision", "provision.sh"))
+  require_relative "provision/provision"
   ########################
   # INSTALL DEPENDENCIES #
   ########################
   repositories = settings["repositories"]
   repositories.each do |repository_name|
-    command.pushMessage("Adding apt-repo #{repository_name}")
+    command.push_message("Adding apt-repo #{repository_name}")
     command.push("add-apt-repository -y #{repository_name} 2>/dev/null")
   end
+  # Ensure postgresql 9.5 installable
+  command.push_message("Adding apt-repo for postgresql 9.5")
+  command.queue_copy("etc/apt/sources.list.d/pgdg.list")
 
   # Update packages
-  command.pushMessage("Updating packages, please wait...")
+  command.push_message("Updating packages, please wait...")
   command.push(command.update)
-  # puts command.update
-  # puts "======"
-  # puts command.get
-  # exit
 
   # Install required packages by scripts
   dependencies = settings["dependencies"]
-  dependencies.each do |package_name|
-    command.pushFile(File.join(".", "provision", "scripts", "install_#{package_name}.sh"))
+  unless dependencies.nil?
+    dependencies.each do |package_name|
+      install_script = File.join(".", "provision", "scripts", "install_#{package_name}")
+      if File.file? "#{install_script}.rb"
+        require_relative "#{install_script}"
+      else
+        command.pushFile("#{install_script}.sh")
+      end
+    end
   end
-  #======================================
-  # End Install required packages by scripts
+
+  #####################
+  #     COPY FILES    #
+  #####################
+  command.push_message("Copying necessary files ...")
+  copied_files = settings["copy"]
+  unless copied_files.nil?
+    copied_files.each do |dest_path|
+      if File.file?(File.join("config", "copy", dest_path))
+        command.queue_copy(dest_path)
+      end
+    end
+  end
   # Every scripts after done provisioning should be placed in this file
-  command.pushFile(File.join(".", "provision", "provision-post.sh"))
+  require_relative "provision/provision-post"
 
   config.vm.provision "run-commands", type: "shell" do |s|
     s.privileged = true
