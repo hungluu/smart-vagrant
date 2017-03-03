@@ -40,10 +40,12 @@ Vagrant.configure("2") do |config|
 
   # Using ip
   private_network_ips = settings["private_network_ips"]
-  private_network_ips.each do |ip_last_number|
-    ip = "#{ip_prefix}.#{ip_last_number}"
-    puts "* Using custom private ip #{ip}"
-    config.vm.network "private_network", ip: ip
+  unless private_network_ips.nil?
+    private_network_ips.each do |ip_last_number|
+      ip = "#{ip_prefix}.#{ip_last_number}"
+      puts "* Using custom private ip #{ip}"
+      config.vm.network "private_network", ip: ip
+    end
   end
 
   # Create a public network, which generally matched to bridged network.
