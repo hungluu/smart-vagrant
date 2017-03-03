@@ -15,6 +15,8 @@ A LAMP stack with original Ubuntu box for Vagrant that is **easy to hack arround
 
 ### 1. Run
 
+After clone this repository, rename `config/main.yaml.example` to `config/main.yaml`
+
 ```shell
 vagrant up --provision
 ```
