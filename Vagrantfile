@@ -130,8 +130,6 @@ Vagrant.configure("2") do |config|
   config.vm.provision "run-commands", type: "shell" do |s|
     s.privileged = true
     # Build final command
-    puts command.to_array
-    exit
     s.inline = command.get
   end
 
