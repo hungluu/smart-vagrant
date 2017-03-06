@@ -132,4 +132,12 @@ Vagrant.configure("2") do |config|
     # Build final command
     s.inline = command.get
   end
+
+  config.vm.provision "restart-apache2", type: "shell", run: "always" do |s|
+    s.privileged = true
+    # Build final command
+    command = LVCommand.new
+    command.push(command.restart_service("apache2"))
+    s.inline = command.get
+  end
 end
