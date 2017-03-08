@@ -4,19 +4,21 @@
 #======================================
 # Provider config
 class Providers
-  def self.virtualbox(box, vm)
+  # Config VirtualBox
+  def virtualbox(box, vm)
     # Display the VirtualBox GUI when booting the machine
-    box.gui = true
+    box.gui = false
     # Customize the amount of memory on the VM:
     box.memory = 1024
   end
 
   def self.select(config, provider)
     puts "* Selecting provider #{provider}"
+    provider_control = new
     config.vm.provider provider do |box, vm|
       case provider
       when "virtualbox"
-        self.virtualbox(box, vm)
+        provider_control.virtualbox(box, vm)
       end
     end
   end

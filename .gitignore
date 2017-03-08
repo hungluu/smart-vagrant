@@ -1,3 +1,17 @@
 .vagrant
-**/millionet*
-config/main.yaml
+
+# Customized yaml files
+config/*.yaml
+
+# HTML Folder
+html/*
+!html/default
+!html/default/*
+!html/test
+!html/test/*
+!html/index.html
+
+# Apache2 sites
+config/apache2/sites/*
+!config/apache2/sites/default.conf
+!config/apache2/sites/test.conf

@@ -15,7 +15,7 @@ A LAMP stack with original Ubuntu box for Vagrant that is **easy to hack arround
 
 ### 1. Run
 
-After clone this repository, rename `config/main.yaml.example` to `config/main.yaml`
+After clone this repository, rename `config/default.yaml.example` to `config/default.yaml`
 
 ```shell
 vagrant up --provision
@@ -40,7 +40,9 @@ Available running sites are
 
 ### 2. Configuration
 
-All configuration should be placed in `config/main.yaml` file
+_**Notice: Each yaml file in `config` folder is used for its own machine. Example: `config/default.yaml` is used for machine named `default`**_
+
+All configuration should be placed in `config/default.yaml` file
 
 **Dependencies:** Is a list of packages to be installed, default ones are Apache 2, PHP 5.6 ... A list of available packages can be found in [package list](PACKAGES.md) file.
 
