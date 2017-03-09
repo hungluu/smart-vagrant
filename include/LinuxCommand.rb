@@ -32,11 +32,6 @@ class LinuxCommand
     "service #{service_name} restart"
   end
 
-  # Generate copy folder command
-  def copy_folder (source_path, dest_path)
-    "cp -a '#{source_path}/.' '#{dest_path}'"
-  end
-
   # Generate create file command
   def create_file (file_path)
     "touch '#{file_path}'"
@@ -44,7 +39,12 @@ class LinuxCommand
 
   # Generate copy command
   def copy (source_path, dest_path)
-    "cp -rf '#{source_path}' '#{dest_path}'"
+    "cp -arf '#{source_path}' '#{dest_path}'"
+  end
+
+  # Generate copy command
+  def remove (remove_path)
+    "rm -rf '#{remove_path}'"
   end
 
   # Generate create folder command

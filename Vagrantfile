@@ -15,7 +15,7 @@ Vagrant.configure("2") do |config|
   Dir.glob("config/*.yaml") do |file|
     machineName = File.basename(file, File.extname(file))
     puts "!Reading file #{file} ..."
-    puts "!Starting machine #{machineName} ..."
+    puts "!Starting machine '#{machineName}' ..."
 
     config.vm.define machineName do |machine|
       # Load configuration
@@ -76,7 +76,7 @@ Vagrant.configure("2") do |config|
       # the path on the host to the actual folder. The second argument is
       # the path on the guest to mount the folder. And the optional third
       # argument is a set of non-required options.
-      machine.vm.synced_folder "./config/apache2/sites", "/etc/apache2/sites-enabled"
+      machine.vm.synced_folder "./config/apache2/sites", "/etc/apache2/sites-available"
       synced_folders = settings["synced_folders"]
       synced_folders.each do |local_path, vm_path|
         puts "* Using synced folder #{local_path}"
@@ -152,10 +152,18 @@ Vagrant.configure("2") do |config|
         s.inline = command.get
       end
 
-      machine.vm.provision "restart-apache2", type: "shell", run: "always" do |s|
+      machine.vm.provision "install-sites", type: "shell", run: "always" do |s|
         s.privileged = true
         # Build final command
         command = LVCommand.new
+        sites = settings["sites"]
+        unless sites.nil?
+          command.push(command.remove("/etc/apache2/sites-enabled/*"))
+          sites.each do |site_name|
+            command.push_message(" * Installing site '#{site_name}'")
+            command.push("a2ensite #{site_name} 2>/dev/null")
+          end
+        end
         command.push(command.restart_service("apache2"))
         s.inline = command.get
       end
