@@ -4,7 +4,7 @@
 # @copyright : Dumday (c) 2017
 #======================================
 # Install php5
-command = LVCommand.shared_command
+command = LampVagrant.command
 command.push_install_message(["PHP 5"])
 command.push_install([
     "python-software-properties",

@@ -1,4 +1,4 @@
-command = LVCommand.shared_command
+command = LampVagrant.command
 command.push_message("* End checking dependencies ...")
 command.push_message("* Removing unused packages ...")
 command.push(command.clean_up)
