@@ -6,7 +6,7 @@
 # @version : 0.0.2
 # @copyright : Dumday (c) 2017
 #======================================
-require_relative "include/LampVagrant"
+require_relative "include/LVCommand"
 require_relative "config/providers"
 
 # All Vagrant configuration is done below. The "2" in Vagrant.configure
@@ -99,7 +99,7 @@ Vagrant.configure("2") do |config|
       #   push.app = "YOUR_ATLAS_USERNAME/YOUR_APPLICATION_NAME"
       # end
 
-      command = LampVagrant.create_command
+      command = LVCommand.create_shared_command
 
       require_relative "provision/provision"
       ########################
@@ -155,7 +155,7 @@ Vagrant.configure("2") do |config|
       machine.vm.provision "install-sites", type: "shell", run: "always" do |s|
         s.privileged = true
         # Build final command
-        command = LampVagrant.new
+        command = LVCommand.new
         sites = settings["sites"]
         unless sites.nil?
           command.push(command.remove("/etc/apache2/sites-enabled/*"))

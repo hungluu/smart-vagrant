@@ -6,18 +6,18 @@
 require "yaml"
 require_relative "LinuxCommand"
 #======================================
-class LampVagrant < LinuxCommand
+class LVCommand < LinuxCommand
   ########################
   # Lamp-Vagrant Helpers #
   ########################
   # Create a shared command for files
-  def self.create_command
-    @command = new
+  def self.create_shared_command
+    @shared_command = new
   end
 
   # Get shared command
-  def self.command
-    @command
+  def self.shared_command
+    @shared_command
   end
 
   def push_install_message(package_list)
@@ -25,7 +25,7 @@ class LampVagrant < LinuxCommand
     push_message("Installing: %s ...", package_names)
   end
 
-  def push_install(package_list, params = '-qq')
+  def push_install(package_list, params = '-y -qq')
     push_install_message(package_list)
     push(install(package_list, params))
   end

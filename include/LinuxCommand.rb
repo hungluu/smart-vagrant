@@ -12,19 +12,19 @@ class LinuxCommand
   # Command generators #
   ######################
   # Generate apt-get install
-  def install (package_list, params = '-qq')
+  def install (package_list, params = '-y -qq')
     package_names = package_list.reject(&:empty?).join(" ")
-    "apt-get #{params} install #{package_names} >/dev/null"
+    "apt-get #{params} install #{package_names} 2>/dev/null"
   end
 
   # Generate apt-get update
-  def update (params = '-qq')
-    "apt-get #{params} update >/dev/null"
+  def update (params = '-y -qq')
+    "apt-get #{params} update 2>/dev/null"
   end
 
   # Generate apt-get update
-  def clean_up (params = '-qq')
-    "apt-get #{params} autoremove >/dev/null"
+  def clean_up (params = '-y -qq')
+    "apt-get #{params} autoremove 2>/dev/null"
   end
 
   # Restart a service
