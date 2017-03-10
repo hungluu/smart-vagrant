@@ -21,6 +21,12 @@ Vagrant.configure("2") do |config|
       # Load configuration
       settings = YAML::load_file(File.join(".", file))
       ip_prefix = settings["ip_prefix"]
+      ultilities_ip = settings["ultilities_ip"]
+      if ultilities_ip.nil?
+        use_ultilities = false
+      else
+        use_ultilities = true
+      end
 
       # The most common configuration options are documented and commented below.
       # For a complete reference, please see the online documentation at
@@ -57,6 +63,11 @@ Vagrant.configure("2") do |config|
           end
         end
       end
+      if use_ultilities
+        ip = "#{ip_prefix}.#{ultilities_ip}"
+        puts "* Using private ip #{ip} for ultilities"
+        machine.vm.network "private_network", ip: ip
+      end
 
       # unless machine.multihostsupdater.nil?
       #   machine.multihostsupdater.aliases = hosts
@@ -82,6 +93,7 @@ Vagrant.configure("2") do |config|
         puts "* Using synced folder #{local_path}"
         machine.vm.synced_folder local_path, vm_path, mount_options: ["dmode=777", "fmode=777"], owner: "www-data", group: "www-data"
       end
+      machine.vm.synced_folder './config/ultilities', '/var/www/ultilities', mount_options: ["dmode=777", "fmode=777"], owner: "www-data", group: "www-data"
 
       # Provider-specific configuration so you can fine-tune various
       # backing providers for Vagrant. These expose provider-specific options.
@@ -145,7 +157,9 @@ Vagrant.configure("2") do |config|
       end
       # Every scripts after done provisioning should be placed in this file
       require_relative "provision/provision-post"
-
+      # command.push(command.create_folder("/etc/apache2/sites-enabled/"))
+      # puts command.get
+      # exit
       machine.vm.provision "run-commands", type: "shell" do |s|
         s.privileged = true
         # Build final command
@@ -157,12 +171,16 @@ Vagrant.configure("2") do |config|
         # Build final command
         command = LampVagrant.new
         sites = settings["sites"]
+        command.push(command.remove("/etc/apache2/sites-enabled/"))
+        command.push(command.create_folder("/etc/apache2/sites-enabled/"))
         unless sites.nil?
-          command.push(command.remove("/etc/apache2/sites-enabled/*"))
           sites.each do |site_name|
             command.push_message(" * Installing site '#{site_name}'")
-            command.push("a2ensite #{site_name} 2>/dev/null")
+            command.push("a2ensite #{site_name} >/dev/null")
           end
+        end
+        if use_ultilities
+          command.push(command.copy("/vagrant/config/ultilities/lamp-vagrant-ultilities.conf", "/etc/apache2/sites-enabled/lamp-vagrant-ultilities.conf"))
         end
         command.push(command.restart_service("apache2"))
         s.inline = command.get

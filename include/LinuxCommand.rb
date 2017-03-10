@@ -14,7 +14,7 @@ class LinuxCommand
   # Generate apt-get install
   def install (package_list, params = '-qq')
     package_names = package_list.reject(&:empty?).join(" ")
-    "apt-get #{params} install #{package_names} >/dev/null"
+    "apt-get #{params} install #{package_names} 2>/dev/null"
   end
 
   # Generate apt-get update
