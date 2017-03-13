@@ -2,21 +2,27 @@ box: "ubuntu/trusty64"
 # Box specifications
 box_check_update : false
 # Provider settings
-provider: "virtualbox"
+provider: virtualbox
 repositories:
-  - "ppa:ondrej/php"
+  - ppa:ondrej/php
 dependencies:
   - apache2
   - apache2-rewrite
   - php5.6
   - postgre9.5-php5.6
   - xdebug-php5.6
+  - mbstring-php5.6
+# Copy files
 copy:
+# Apache sites
+sites:
+  - test
 #=================
 # IP settings
-ip_prefix: "1.1.0"
+ip_prefix: 1.1.0
 private_network_ips:
   - 100
+ultilities_ip: 254
 # Synced folder
 synced_folders:
-  "./html" : "/var/www/html"
+  "../" : "/var/www/html"
