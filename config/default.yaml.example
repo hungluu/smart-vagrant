@@ -12,6 +12,7 @@ dependencies:
   - postgre9.5-php5.6
   - xdebug-php5.6
   - mbstring-php5.6
+  - curl-php5.6
 # Copy files
 copy:
 # Apache sites
