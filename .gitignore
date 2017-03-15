@@ -1,4 +1,5 @@
 .vagrant
+*.temp
 
 # Customized yaml files
 config/*.yaml

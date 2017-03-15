@@ -3,7 +3,7 @@
 #======================================
 # Lamp-Vagrant
 # @author : HR
-# @version : 0.0.2
+# @version : 0.1.0
 # @copyright : Dumday (c) 2017
 #======================================
 require_relative "include/LampVagrant"
@@ -92,9 +92,11 @@ Vagrant.configure("2") do |config|
       # argument is a set of non-required options.
       machine.vm.synced_folder "./config/apache2/sites", "/etc/apache2/sites-available"
       synced_folders = settings["synced_folders"]
-      synced_folders.each do |local_path, vm_path|
-        puts "* Using synced folder #{local_path}"
-        machine.vm.synced_folder local_path, vm_path, mount_options: ["dmode=777", "fmode=777"], owner: "www-data", group: "www-data"
+      unless synced_folders.nil?
+        synced_folders.each do |local_path, vm_path|
+          puts "* Using synced folder #{local_path}"
+          machine.vm.synced_folder local_path, vm_path, mount_options: ["dmode=777", "fmode=777"], owner: "www-data", group: "www-data"
+        end
       end
       machine.vm.synced_folder './config/ultilities', '/var/www/ultilities', mount_options: ["dmode=777", "fmode=777"], owner: "www-data", group: "www-data"
 
