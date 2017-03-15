@@ -4,9 +4,10 @@
 # @copyright : Dumday (c) 2017
 #======================================
 # Install php5
-command = LampVagrant.instance
-command.push_install_message(["PHP 5"])
-command.push_install([
+lv = LampVagrant.instance
+command = lv.command
+lv.push_install_message(["PHP 5"])
+lv.push_install([
     "python-software-properties",
     "php5",
     "libapache2-mod-php5",

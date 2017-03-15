@@ -13,13 +13,16 @@ require_relative "config/providers"
 # configures the configuration version
 Vagrant.configure("2") do |config|
   Dir.glob("config/*.yaml") do |file|
-    machineName = File.basename(file, File.extname(file))
+    machine_name = File.basename(file, File.extname(file))
     puts "!Reading file #{file} ..."
-    puts "!Starting machine '#{machineName}' ..."
+    puts "!Starting machine '#{machine_name}' ..."
 
-    config.vm.define machineName do |machine|
+    config.vm.define machine_name do |machine|
+      lv = LampVagrant.init(machine_name)
+      command = lv.command
       # Load configuration
-      settings = YAML::load_file(File.join(".", file))
+      settings = lv.settings
+
       ip_prefix = settings["ip_prefix"]
       ultilities_ip = settings["ultilities_ip"]
       if ultilities_ip.nil?
@@ -111,20 +114,10 @@ Vagrant.configure("2") do |config|
       #   push.app = "YOUR_ATLAS_USERNAME/YOUR_APPLICATION_NAME"
       # end
 
-      command = LampVagrant.init
-
       require_relative "provision/provision"
       ########################
       # INSTALL DEPENDENCIES #
       ########################
-      repositories = settings["repositories"]
-      repositories.each do |repository_name|
-        command.push_message("Adding apt-repo #{repository_name}")
-        command.push("add-apt-repository -y #{repository_name} 2>/dev/null")
-      end
-      # Ensure postgresql 9.5 installable
-      command.push_message("Adding apt-repo for postgresql 9.5")
-      command.queue_copy("etc/apt/sources.list.d/pgdg.list")
 
       # Update packages
       command.push_message("Updating packages, please wait...")
@@ -134,13 +127,13 @@ Vagrant.configure("2") do |config|
       dependencies = settings["dependencies"]
       unless dependencies.nil?
         dependencies.each do |package_name|
-          install_script = File.join(".", "provision", "scripts", "install_#{package_name}")
+          install_script = File.join(".", "provision", "install", "install_#{package_name}")
           if File.file? "#{install_script}.rb"
             require_relative "#{install_script}"
           elsif File.file? "#{install_script}.sh"
             command.pushFile("#{install_script}.sh")
           else
-            command.push_install([package_name])
+            lv.push_install([package_name])
           end
         end
       end
@@ -152,16 +145,40 @@ Vagrant.configure("2") do |config|
       copied_files = settings["copy"]
       unless copied_files.nil?
         copied_files.each do |dest_path|
-          if File.file?(File.join("config", "copy", dest_path))
-            command.queue_copy(dest_path)
+          if File.file? File.join("config", "copy", dest_path)
+            lv.queue_copy(dest_path)
           end
         end
       end
       # Every scripts after done provisioning should be placed in this file
       require_relative "provision/provision-post"
-      # command.push(command.create_folder("/etc/apache2/sites-enabled/"))
-      # puts command.get
-      # exit
+
+      command.begin_transaction
+        repositories = settings["repositories"]
+        unless repositories.nil?
+          repositories.each do |repository_name|
+            install_script = File.join(".", "provision", "apt-repo", "add_repo_#{repository_name}")
+            if File.file? "#{install_script}.rb"
+              require_relative "#{install_script}"
+            elsif File.file? "#{install_script}.sh"
+              command.pushFile("#{install_script}.sh")
+            else
+              command.push_message("Adding apt-repo #{repository_name} ...")
+              command.push(command.add_repo(repository_name))
+            end
+          end
+        end
+        transaction = command.transaction
+      command.end_transaction
+
+
+      injected_commands = transaction.to_array.reverse
+      command.begin_insert(1)
+      injected_commands.each do |injected_command|
+        command.push(injected_command, false)
+      end
+      command.end_insert
+
       machine.vm.provision "run-commands", type: "shell" do |s|
         s.privileged = true
         # Build final command
@@ -171,7 +188,8 @@ Vagrant.configure("2") do |config|
       machine.vm.provision "install-sites", type: "shell", run: "always" do |s|
         s.privileged = true
         # Build final command
-        command = LampVagrant.new
+        lv = LampVagrant.new(machine_name)
+        command = lv.command
         sites = settings["sites"]
         command.push(command.remove("/etc/apache2/sites-enabled/"))
         command.push(command.create_folder("/etc/apache2/sites-enabled/"))

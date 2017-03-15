@@ -3,35 +3,16 @@
 # @copyright : Dumday (c) 2017
 #======================================
 # Command builder
-class LinuxCommand
+class BaseCommand
   def initialize
     @commands = []
+    @inserting_position = false
+    @transaction = nil
   end
 
   ######################
   # Command generators #
   ######################
-  # Generate apt-get install
-  def install (package_list, params = '-qq')
-    package_names = package_list.reject(&:empty?).join(" ")
-    "apt-get #{params} install #{package_names} >/dev/null 2>/dev/null"
-  end
-
-  # Generate apt-get update
-  def update (params = '-qq')
-    "apt-get #{params} update >/dev/null 2>/dev/null"
-  end
-
-  # Generate apt-get update
-  def clean_up (params = '-qq')
-    "apt-get #{params} autoremove >/dev/null 2>/dev/null"
-  end
-
-  # Restart a service
-  def restart_service (service_name)
-    "service #{service_name} restart"
-  end
-
   # Generate create file command
   def create_file (file_path)
     "touch '#{file_path}'"
@@ -135,7 +116,14 @@ class LinuxCommand
       str_command = "#{command}"
     end
 
-    @commands.push(str_command)
+    if @transaction.is_a? BaseCommand
+      @transaction.push(str_command, sudo)
+    elsif @inserting_position === false
+      @commands.push(str_command)
+    else
+      @commands.insert(@inserting_position, str_command)
+    end
+
     return str_command
   end
 
@@ -146,5 +134,25 @@ class LinuxCommand
       @commands.push(file.read)
       file.close # release the file
     end
+  end
+
+  def begin_insert(position)
+    @inserting_position = position
+  end
+
+  def end_insert
+    @inserting_position = false
+  end
+
+  def begin_transaction
+    @transaction = self.class.new
+  end
+
+  def end_transaction
+    @transaction = nil
+  end
+
+  def transaction
+    @transaction
   end
 end

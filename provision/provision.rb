@@ -2,12 +2,15 @@
 # Lamp-Vagrant
 # @copyright : Dumday (c) 2017
 #======================================
-command = LampVagrant.instance
+lv = LampVagrant.instance
+command = lv.command
 # Hide tty warning
-command.push("sed -i '/tty/!s/mesg n/tty -s \\&\\& mesg n/' /root/.profile")
-command.push_message("=====================================")
-command.push_message("WELCOME TO %s <Provisioner>", ["Lamp-Vagrant"])
-command.push_message("=====================================")
-command.push_message("* Checking dependencies ...")
+command.push(command.join_commands([
+  command.sudo("sed -i '/tty/!s/mesg n/tty -s \\&\\& mesg n/' /root/.profile"),
+  command.echo("====================================="),
+  command.echo("WELCOME TO %s <Provisioner>", ["Lamp-Vagrant"]),
+  command.echo("====================================="),
+  command.echo("* Checking dependencies ...")
+]), false)
 #=====================================
 # Start editing from here

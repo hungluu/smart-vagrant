@@ -4,9 +4,11 @@
 # @copyright : Dumday (c) 2017
 #======================================
 # Install php5.6
-command = LampVagrant.instance
-command.push_install_message(["PHP 5.6"])
-command.push_install([
+lv = LampVagrant.instance
+command = lv.command
+lv.require_apt_repo("php")
+lv.push_install_message(["PHP 5.6"])
+lv.push_install([
     "python-software-properties",
     "php5.6",
     "libapache2-mod-php5.6",
