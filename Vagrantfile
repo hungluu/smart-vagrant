@@ -137,8 +137,10 @@ Vagrant.configure("2") do |config|
           install_script = File.join(".", "provision", "scripts", "install_#{package_name}")
           if File.file? "#{install_script}.rb"
             require_relative "#{install_script}"
-          else
+          elsif File.file? "#{install_script}.sh"
             command.pushFile("#{install_script}.sh")
+          else
+            command.push_install([package_name])
           end
         end
       end

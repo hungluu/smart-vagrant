@@ -9,10 +9,10 @@ dependencies:
   - apache2
   - apache2-rewrite
   - php5.6
-  - postgre9.5-php5.6
-  - xdebug-php5.6
-  - mbstring-php5.6
-  - curl-php5.6
+  - php5.6-postgre9.5
+  - php5.6-xdebug
+  - php5.6-mbstring
+  - php5.6-curl
 # Copy files
 copy:
 # Apache sites
