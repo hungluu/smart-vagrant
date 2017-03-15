@@ -11,12 +11,12 @@ class LampVagrant < LinuxCommand
   # Lamp-Vagrant Helpers #
   ########################
   # Create a shared command for files
-  def self.create_command
+  def self.init
     @command = new
   end
 
   # Get shared command
-  def self.command
+  def self.instance
     @command
   end
 

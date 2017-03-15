@@ -2,7 +2,7 @@
 # Lamp-Vagrant
 # @copyright : Dumday (c) 2017
 #======================================
-command = LampVagrant.command
+command = LampVagrant.instance
 # Hide tty warning
 command.push("sed -i '/tty/!s/mesg n/tty -s \\&\\& mesg n/' /root/.profile")
 command.push_message("=====================================")

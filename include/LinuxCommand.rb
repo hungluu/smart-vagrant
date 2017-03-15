@@ -14,17 +14,17 @@ class LinuxCommand
   # Generate apt-get install
   def install (package_list, params = '-qq')
     package_names = package_list.reject(&:empty?).join(" ")
-    "apt-get #{params} install #{package_names} 2>/dev/null"
+    "apt-get #{params} install #{package_names} >/dev/null 2>/dev/null"
   end
 
   # Generate apt-get update
   def update (params = '-qq')
-    "apt-get #{params} update >/dev/null"
+    "apt-get #{params} update >/dev/null 2>/dev/null"
   end
 
   # Generate apt-get update
   def clean_up (params = '-qq')
-    "apt-get #{params} autoremove >/dev/null"
+    "apt-get #{params} autoremove >/dev/null 2>/dev/null"
   end
 
   # Restart a service

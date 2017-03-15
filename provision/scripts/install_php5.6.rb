@@ -4,7 +4,7 @@
 # @copyright : Dumday (c) 2017
 #======================================
 # Install php5.6
-command = LampVagrant.command
+command = LampVagrant.instance
 command.push_install_message(["PHP 5.6"])
 command.push_install([
     "python-software-properties",
