@@ -16,7 +16,7 @@ class UbuntuCommand < BaseCommand
   end
 
   def add_repo (repository_name)
-    "add-apt-repository -y #{repository_name} 2>/dev/null"
+    "add-apt-repository -y #{repository_name} >/dev/null 2>/dev/null"
   end
 
   # Generate apt-get update
@@ -27,6 +27,16 @@ class UbuntuCommand < BaseCommand
   # Generate apt-get update
   def clean_up (params = '-qq')
     "apt-get #{params} autoremove >/dev/null 2>/dev/null"
+  end
+
+  # Stop a service
+  def start_service (service_name)
+    "service #{service_name} stop"
+  end
+
+  # Start a service
+  def start_service (service_name)
+    "service #{service_name} start"
   end
 
   # Restart a service

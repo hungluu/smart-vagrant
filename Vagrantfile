@@ -15,7 +15,7 @@ Vagrant.configure("2") do |config|
   Dir.glob("config/*.yaml") do |file|
     machine_name = File.basename(file, File.extname(file))
     puts "!Reading file #{file} ..."
-    puts "!Starting machine '#{machine_name}' ..."
+    puts "!Using machine '#{machine_name}' ..."
 
     config.vm.define machine_name do |machine|
       lv = LampVagrant.init(machine_name)
@@ -24,12 +24,6 @@ Vagrant.configure("2") do |config|
       settings = lv.settings
 
       ip_prefix = settings["ip_prefix"]
-      ultilities_ip = settings["ultilities_ip"]
-      if ultilities_ip.nil?
-        use_ultilities = false
-      else
-        use_ultilities = true
-      end
 
       # The most common configuration options are documented and commented below.
       # For a complete reference, please see the online documentation at
@@ -51,7 +45,7 @@ Vagrant.configure("2") do |config|
 
       # Create a private network, which allows host-only access to the machine
       # using a specific IP.
-      machine.vm.network "private_network", ip: "#{ip_prefix}.254"
+      # machine.vm.network "private_network", ip: "#{ip_prefix}.254"
 
       # Using ip
       hosts = {}
@@ -66,7 +60,9 @@ Vagrant.configure("2") do |config|
           end
         end
       end
-      if use_ultilities
+
+      ultilities_ip = settings["ultilities_ip"]
+      if settings["use_ultilities"] === true
         ip = "#{ip_prefix}.#{ultilities_ip}"
         puts "* Using private ip #{ip} for ultilities"
         machine.vm.network "private_network", ip: ip
@@ -90,15 +86,17 @@ Vagrant.configure("2") do |config|
       # the path on the host to the actual folder. The second argument is
       # the path on the guest to mount the folder. And the optional third
       # argument is a set of non-required options.
-      machine.vm.synced_folder "./config/apache2/sites", "/etc/apache2/sites-available"
+      machine.vm.synced_folder '.', '/vagrant', disabled: true
+      machine.vm.synced_folder '.', '/lamp-vagrant'
+      # machine.vm.synced_folder "./config/apache2/sites", "/etc/apache2/sites-available"
       synced_folders = settings["synced_folders"]
       unless synced_folders.nil?
         synced_folders.each do |local_path, vm_path|
           puts "* Using synced folder #{local_path}"
-          machine.vm.synced_folder local_path, vm_path, mount_options: ["dmode=777", "fmode=777"], owner: "www-data", group: "www-data"
+          machine.vm.synced_folder local_path, vm_path , mount_options: ["dmode=777", "fmode=777"], owner: "apache", group: "apache"
         end
       end
-      machine.vm.synced_folder './config/ultilities', '/var/www/ultilities', mount_options: ["dmode=777", "fmode=777"], owner: "www-data", group: "www-data"
+      machine.vm.synced_folder './config/ultilities', '/var/www/ultilities' , mount_options: ["dmode=777", "fmode=777"], owner: "apache", group: "apache"
 
       # Provider-specific configuration so you can fine-tune various
       # backing providers for Vagrant. These expose provider-specific options.
@@ -130,12 +128,12 @@ Vagrant.configure("2") do |config|
       unless dependencies.nil?
         dependencies.each do |package_name|
           install_script = File.join(".", "provision", "install", "install_#{package_name}")
-          if File.file? "#{install_script}.rb"
+          if File.file?("#{install_script}.rb")
             require_relative "#{install_script}"
-          elsif File.file? "#{install_script}.sh"
+          elsif File.file?("#{install_script}.sh")
             command.pushFile("#{install_script}.sh")
           else
-            lv.push_install([package_name])
+            command.push(command.install([package_name]))
           end
         end
       end
@@ -147,7 +145,7 @@ Vagrant.configure("2") do |config|
       copied_files = settings["copy"]
       unless copied_files.nil?
         copied_files.each do |dest_path|
-          if File.file? File.join("config", "copy", dest_path)
+          if File.file?(File.join("config", "copy", dest_path))
             lv.queue_copy(dest_path)
           end
         end
@@ -160,9 +158,9 @@ Vagrant.configure("2") do |config|
         unless repositories.nil?
           repositories.each do |repository_name|
             install_script = File.join(".", "provision", "apt-repo", "add_repo_#{repository_name}")
-            if File.file? "#{install_script}.rb"
+            if File.file?("#{install_script}.rb")
               require_relative "#{install_script}"
-            elsif File.file? "#{install_script}.sh"
+            elsif File.file?("#{install_script}.sh")
               command.pushFile("#{install_script}.sh")
             else
               command.push_message("Adding apt-repo #{repository_name} ...")
@@ -170,42 +168,33 @@ Vagrant.configure("2") do |config|
             end
           end
         end
-        transaction = command.transaction
+
+        command.commit_transaction(1)
       command.end_transaction
 
+      if command.has_commands
+        machine.vm.provision "run-commands", type: "shell" do |s|
+          s.privileged = true
+          # Build final command
+          # puts command.to_array
+          # exit
+          s.inline = command.get
+        end
 
-      injected_commands = transaction.to_array.reverse
-      command.begin_insert(1)
-      injected_commands.each do |injected_command|
-        command.push(injected_command, false)
-      end
-      command.end_insert
-
-      machine.vm.provision "run-commands", type: "shell" do |s|
-        s.privileged = true
-        # Build final command
-        s.inline = command.get
-      end
-
-      machine.vm.provision "install-sites", type: "shell", run: "always" do |s|
-        s.privileged = true
-        # Build final command
-        lv = LampVagrant.new(machine_name)
-        command = lv.command
-        sites = settings["sites"]
-        command.push(command.remove("/etc/apache2/sites-enabled/"))
-        command.push(command.create_folder("/etc/apache2/sites-enabled/"))
-        unless sites.nil?
-          sites.each do |site_name|
-            command.push_message(" * Installing site '#{site_name}'")
-            command.push("a2ensite #{site_name} >/dev/null")
+        if dependencies.is_a?(Array) && dependencies.include?("apache2")
+          machine.vm.provision "install-apache2-sites", type: "shell", run: "always" do |s|
+            s.privileged = true
+            # Build final command
+            lv = LampVagrant.init(machine_name)
+            command = lv.command
+            require_relative File.join(".", "provision", "scripts", "install-apache2-sites.rb")
+            # puts command.to_array
+            # exit
+            s.inline = command.get
           end
         end
-        if use_ultilities
-          command.push(command.copy("/vagrant/config/ultilities/lamp-vagrant-ultilities.conf", "/etc/apache2/sites-enabled/lamp-vagrant-ultilities.conf"))
-        end
-        command.push(command.restart_service("apache2"))
-        s.inline = command.get
+      else
+        puts "[Warning] No command to run"
       end
     end
   end

@@ -63,6 +63,10 @@ class BaseCommand
     params.reject(&:empty?).join(glue)
   end
 
+  def quote(command)
+    "'#{command}'"
+  end
+
   # Build if statements
   def make_if(if_condtion, if_statement, else_statement = nil, elseif_statements = {})
     commands = []
@@ -110,6 +114,10 @@ class BaseCommand
 
   # Add a command into queue
   def push (command, sudo = true)
+    if command.nil? || command.empty?
+      return
+    end
+
     if sudo === true
       str_command = "sudo #{command}"
     else
@@ -129,7 +137,7 @@ class BaseCommand
 
   # Add a file into queue
   def pushFile (file_path)
-    if File.file? file_path
+    if File.file?(file_path)
       file = File.open(file_path, "rb") # read file contents into string
       @commands.push(file.read)
       file.close # release the file
@@ -154,5 +162,27 @@ class BaseCommand
 
   def transaction
     @transaction
+  end
+
+  def commit_transaction (position = nil)
+    merge(@transaction, position)
+  end
+
+  def merge (other_command, position = nil)
+    if (position.nil?)
+      injected_commands = other_command.to_array
+      injected_commands.each do |injected_command|
+        @commands.push(injected_command);
+      end
+    else
+      injected_commands = other_command.to_array.reverse
+      injected_commands.each do |injected_command|
+        @commands.insert(position, injected_command);
+      end
+    end
+  end
+
+  def has_commands
+    @commands.length > 0
   end
 end
