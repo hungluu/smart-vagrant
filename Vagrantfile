@@ -7,7 +7,7 @@
 # @copyright : Dumday (c) 2017
 #======================================
 require_relative "include/LampVagrant"
-require_relative "config/providers"
+require_relative "config/Providers"
 ssh_port = 2400
 
 # All Vagrant configuration is done below. The "2" in Vagrant.configure
