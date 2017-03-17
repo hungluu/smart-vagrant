@@ -1,0 +1,29 @@
+box: "ubuntu/trusty64"
+# OS specifications
+os: "ubuntu"
+version: "14"
+subversion: "04"
+# Box specifications
+box_check_update : false
+# Provider settings
+provider: virtualbox
+repositories:
+dependencies:
+  - apache2
+  - php5.6
+  - php5.6-postgre9.5
+  - php5.6-xdebug
+  - php5.6-curl
+# Copy files
+copy:
+# Apache sites
+sites:
+  - millionet
+#=================
+# IP settings
+ip_prefix: 1.1.0
+private_network_ips:
+  - 100
+# Synced folder
+synced_folders:
+  "../" : "/var/www/html"

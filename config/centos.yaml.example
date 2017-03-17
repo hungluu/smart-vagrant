@@ -1,0 +1,24 @@
+box: "centos/7"
+# OS specifications
+os: "centos"
+version: "7"
+subversion: ""
+# Box specifications
+box_check_update : false
+# Provider settings
+provider: virtualbox
+#=================
+# IP settings
+ip_prefix: 1.1.0
+private_network_ips:
+  - 123
+sites:
+  - millionet
+dependencies:
+  - apache2
+  - php5.6
+  - php5.6-postgre9.5
+  - php5.6-xdebug
+  - php5.6-curl
+synced_folders:
+  "../" : "/var/www/html"
