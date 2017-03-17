@@ -11,10 +11,11 @@ class UbuntuCommand < BaseCommand
   ######################
   # Generate apt-get install
   def install (package_list, params = '-qq')
-    package_names = package_list.reject(&:empty?).join(" ")
+    package_names = resolve_packages(package_list.reject(&:empty?).join(" "))
     "apt-get #{params} install #{package_names} >/dev/null 2>/dev/null"
   end
 
+  # Install an apt repo
   def add_repo (repository_name)
     "add-apt-repository -y #{repository_name} >/dev/null 2>/dev/null"
   end

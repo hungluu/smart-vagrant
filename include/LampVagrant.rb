@@ -5,7 +5,7 @@
 # Command builder
 require "yaml"
 require_relative "command_builders/UbuntuCommand"
-require_relative "command_builders/CentosCommand"
+require_relative "CentosMergedCommand"
 #======================================
 class LampVagrant
   ########################
@@ -38,7 +38,7 @@ class LampVagrant
 
     @command = case os
       when "ubuntu" then UbuntuCommand.new
-      else CentosCommand.new
+      else CentosMergedCommand.new
     end
   end
 
@@ -101,8 +101,12 @@ class LampVagrant
 
   # Queue copying a file when provisioning
   # file should be placed in config/copy folder
-  def queue_copy(source_path)
-    dest_path = "/#{source_path}"
+  def queue_copy(source_path, dest_path = nil)
+    if dest_path.nil?
+      dest_path = "/#{source_path}"
+    else
+      dest_path = "/#{dest_path}"
+    end
     vm_source_path = "/lamp-vagrant/config/copy/#{source_path}"
     command.push_message("Copying %s ...", [dest_path])
     command.push(

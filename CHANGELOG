@@ -1,3 +1,4 @@
+0.1.1 Centos and Ubuntu boxes can run in parallel and contact with each other
 0.1.0 Prepare for multi OS environment, remove unused files, add apt-repo auto injection
 0.0.2 Build an all-in-one command builder, change all installing scripts source from shell into ruby
-0.0.1 Init
+0.0.1 Initialize

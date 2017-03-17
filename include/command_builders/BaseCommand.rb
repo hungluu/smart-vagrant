@@ -5,8 +5,11 @@
 # Command builder
 class BaseCommand
   def initialize
+    # Store commands
     @commands = []
+    # Store position in INSERT mode
     @inserting_position = false
+    # Store transaction
     @transaction = nil
   end
 
@@ -63,6 +66,7 @@ class BaseCommand
     params.reject(&:empty?).join(glue)
   end
 
+  # Quote a command
   def quote(command)
     "'#{command}'"
   end
@@ -93,6 +97,7 @@ class BaseCommand
     to_array.join("\r\n")
   end
 
+  # Convert to array
   def to_array
     @commands.reject(&:empty?)
   end
@@ -144,30 +149,37 @@ class BaseCommand
     end
   end
 
+  # Start INSERT mode
   def begin_insert(position)
     @inserting_position = position
   end
 
+  # End INSERT mode
   def end_insert
     @inserting_position = false
   end
 
+  # Start transaction
   def begin_transaction
     @transaction = self.class.new
   end
 
+  # End transaction
   def end_transaction
     @transaction = nil
   end
 
+  # Get current transaction
   def transaction
     @transaction
   end
 
+  # Commit transaction
   def commit_transaction (position = nil)
     merge(@transaction, position)
   end
 
+  # Merge with other command builder
   def merge (other_command, position = nil)
     if (position.nil?)
       injected_commands = other_command.to_array
@@ -182,7 +194,13 @@ class BaseCommand
     end
   end
 
+  # Check if not empty
   def has_commands
     @commands.length > 0
+  end
+
+  # Resolve package names
+  def resolve_packages(package_names)
+    package_names
   end
 end

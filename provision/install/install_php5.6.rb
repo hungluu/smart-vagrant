@@ -10,11 +10,11 @@ lv.require_apt_repo("php")
 lv.push_install_message(["PHP 5.6"])
 case lv.os
 when "centos"
-  package_list = ["php56w", "php56w-opcache", "php56w-mbstring", "php56w-pdo"]
+  package_list = ["php5.6", "php5.6-opcache", "php5.6-mcrypt", "php5.6-mbstring", "php5.6-pdo"]
   lv.push_install_message(package_list, 1)
   command.push(command.install(package_list))
 else
-  package_list = ["python-software-properties", "php5.6", "libapache2-mod-php5.6", "php5.6-mcrypt", "php5.6-mbstring", "php5.6-pdo"]
+  package_list = ["python-software-properties", "php5.6", "libapache2-mod-php5.6", "php5.6-opcache", "php5.6-mcrypt", "php5.6-mbstring", "php5.6-pdo"]
   lv.push_install_message(package_list, 1)
   command.push(command.install(package_list))
   # Applying new php version to apache2

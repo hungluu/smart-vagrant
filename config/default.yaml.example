@@ -1,13 +1,15 @@
 box: "ubuntu/trusty64"
+# OS specifications
+os: "ubuntu"
+version: "14"
+subversion: "04"
 # Box specifications
 box_check_update : false
 # Provider settings
 provider: virtualbox
 repositories:
-  - ppa:ondrej/php
 dependencies:
   - apache2
-  - apache2-rewrite
   - php5.6
   - php5.6-postgre9.5
   - php5.6-xdebug
@@ -16,7 +18,6 @@ dependencies:
 copy:
 # Apache sites
 sites:
-  - test
 #=================
 # IP settings
 ip_prefix: 1.1.0
@@ -25,4 +26,4 @@ private_network_ips:
 ultilities_ip: 254
 # Synced folder
 synced_folders:
-  "../" : "/var/www/html"
+  "./html" : "/var/www/html"

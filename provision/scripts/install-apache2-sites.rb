@@ -14,6 +14,9 @@ when "centos"
   if lv.settings["use_ultilities"] === true
     command.push(command.copy("/lamp-vagrant/config/ultilities/lamp-vagrant-ultilities.conf", "/etc/httpd/sites-enabled/lamp-vagrant-ultilities.conf"))
   end
+
+  command.push(command.sudo("setenforce 0"))
+# Ubuntu
 else
   command.push(command.remove("/etc/apache2/sites-enabled/"))
   command.push(command.create_folder("/etc/apache2/sites-enabled/"))
@@ -27,5 +30,4 @@ else
     command.push(command.copy("/lamp-vagrant/config/ultilities/lamp-vagrant-ultilities.conf", "/etc/apache2/sites-enabled/lamp-vagrant-ultilities.conf"))
   end
 end
-command.push(command.sudo("setenforce 0"))
 lv.apache2_restart

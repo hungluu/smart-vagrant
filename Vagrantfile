@@ -3,11 +3,12 @@
 #======================================
 # Lamp-Vagrant
 # @author : HR
-# @version : 0.1.0
+# @version : 0.1.1
 # @copyright : Dumday (c) 2017
 #======================================
 require_relative "include/LampVagrant"
 require_relative "config/providers"
+ssh_port = 2400
 
 # All Vagrant configuration is done below. The "2" in Vagrant.configure
 # configures the configuration version
@@ -15,9 +16,14 @@ Vagrant.configure("2") do |config|
   Dir.glob("config/*.yaml") do |file|
     machine_name = File.basename(file, File.extname(file))
     puts "!Reading file #{file} ..."
-    puts "!Using machine '#{machine_name}' ..."
-
     config.vm.define machine_name do |machine|
+      puts "***************************************"
+      puts "* Configuring '#{machine_name}' ... "
+
+      ssh_port += 1
+      machine.vm.network :forwarded_port, guest: 22, host: 2222, id: "ssh", disabled: true
+      machine.vm.network :forwarded_port, guest: 22, host: ssh_port, auto_correct: true
+
       lv = LampVagrant.init(machine_name)
       command = lv.command
       # Load configuration
@@ -53,10 +59,12 @@ Vagrant.configure("2") do |config|
       unless private_network_ips.nil?
         private_network_ips.each do |ip_last_number, host_name|
           ip = "#{ip_prefix}.#{ip_last_number}"
-          puts "* Using custom private ip #{ip}"
           machine.vm.network "private_network", ip: ip
           unless host_name.nil?
+            puts "* #{machine_name}: Using custom private ip #{ip} for #{host_name}"
             hosts[ip] = [host_name]
+          else
+            puts "* #{machine_name}: Using custom private ip #{ip}"
           end
         end
       end
@@ -64,7 +72,7 @@ Vagrant.configure("2") do |config|
       ultilities_ip = settings["ultilities_ip"]
       if settings["use_ultilities"] === true
         ip = "#{ip_prefix}.#{ultilities_ip}"
-        puts "* Using private ip #{ip} for ultilities"
+        puts "* #{machine_name}: Using private ip #{ip} for ultilities"
         machine.vm.network "private_network", ip: ip
       end
 
@@ -92,11 +100,11 @@ Vagrant.configure("2") do |config|
       synced_folders = settings["synced_folders"]
       unless synced_folders.nil?
         synced_folders.each do |local_path, vm_path|
-          puts "* Using synced folder #{local_path}"
-          machine.vm.synced_folder local_path, vm_path , mount_options: ["dmode=777", "fmode=777"], owner: "apache", group: "apache"
+          puts "* #{machine_name}: Using synced folder #{local_path}"
+          machine.vm.synced_folder local_path, vm_path , mount_options: ["dmode=775", "fmode=664"]
         end
       end
-      machine.vm.synced_folder './config/ultilities', '/var/www/ultilities' , mount_options: ["dmode=777", "fmode=777"], owner: "apache", group: "apache"
+      machine.vm.synced_folder './config/ultilities', '/var/www/ultilities' , mount_options: ["dmode=775", "fmode=664"]
 
       # Provider-specific configuration so you can fine-tune various
       # backing providers for Vagrant. These expose provider-specific options.
@@ -133,6 +141,7 @@ Vagrant.configure("2") do |config|
           elsif File.file?("#{install_script}.sh")
             command.pushFile("#{install_script}.sh")
           else
+            lv.push_install_message([package_name])
             command.push(command.install([package_name]))
           end
         end
@@ -194,8 +203,10 @@ Vagrant.configure("2") do |config|
           end
         end
       else
-        puts "[Warning] No command to run"
+        puts "* #{machine_name}: [Warning] No command to run"
       end
+
+      puts "*"
     end
   end
 end

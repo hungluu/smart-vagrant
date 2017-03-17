@@ -1,24 +1,28 @@
 # LAMP Vagrant
 
-A LAMP stack with original Ubuntu box for Vagrant that is **easy to hack arround and customize** however you want.
+A LAMP stack with original Ubuntu / CentOS boxes for Vagrant that **just works and easy to customize**.
 
-*This setup is running with vagrant 1.9.1 and VirtualBox 5.1.14 r112924 (Qt5.6.2) Windows.*
+*Running with vagrant 1.9.1 and VirtualBox 5.1.14 r112924 (Qt5.6.2) Windows | Ubuntu 14.04*
 
-*Xdebug is enabled by default*
-
-**Default state:**
-- Ubuntu 14.04
-- Apache 2.4.7
-- PHP 5.6
-- Xdebug
-- Postgresql 9.5
+*With example configuration file, Vagrant will install an Ubuntu 14.04 machine which contains Apache 2, PHP 5.6, Postgresql 9.5 and Xdebug*
 
 ### 1. Run
 
-After clone this repository, rename `config/default.yaml.example` to `config/default.yaml`
-
+**Preparing:**
+- Install [Virtualbox](https://www.virtualbox.org/wiki/Downloads) and [Vagrant](https://www.vagrantup.com/downloads.html).
+- This Vagrant stack requires `vagrant-vbguest` plugin for fully CentOS supports.
 ```shell
-vagrant up --provision
+vagrant plugin install vagrant-vbguest
+```
+- Clone this repository or download latest version [here](https://codeload.github.com/dumday/lamp-vagrant/zip/master)
+```
+git clone https://github.com/dumday/lamp-vagrant.git
+```
+- After clone this repository, rename `config/default.yaml.example` to `config/default.yaml`
+
+**Running:**
+```shell
+vagrant up
 ```
 Wait for everything loaded then navigate to [http://1.1.0.254](http://1.1.0.254) to see if it works
 
@@ -31,9 +35,9 @@ To shut down the VM
 vagrant halt
 ```
 
-More syntax can be found in their [Vagrant document](https://www.vagrantup.com/docs/).
+More syntax can be found in their [Vagrant document](https://www.vagrantup.com/docs/cli/).
 
-Available running sites are
+Available running sites with example configuration file are
 
 - 1.1.0.254 A generic test site, with php info can be found at [http://1.1.0.254/phpinfo.php](http://1.1.0.254/phpinfo.php)
 - 1.1.0.100 Site running with source in `html/test` folder and settings in `config/apache2/sites/test.conf`
@@ -44,6 +48,8 @@ _**Notice: Each yaml file in `config` folder is used for its own machine. Exampl
 
 All configuration should be placed in `config/default.yaml` file
 
+**OS and version** are important settings that will be used for provisioning proccess (Example: os: "CentOS", versionL "14")
+
 **Dependencies:** Is a list of packages to be installed, default ones are Apache 2, PHP 5.6 ... A list of available packages can be found in [package list](PACKAGES.md) file.
 
 **Copy:** is a list of file to be copied to VM, all those files should locates in `config/copy` folder. Local file path should represent the actual file path in VM machine. Example: `config/copy/etc/php5/php.ini` in local machine will be copied to `/etc/php5/php.ini` in VM.
@@ -51,6 +57,7 @@ All configuration should be placed in `config/default.yaml` file
 **IP settings:**
 - ip_prefix: is the first part of ips, `127.0.0.1` has prefix `127.0.0`
 - private_network_ips: is a list of second parts of ips, `127.0.0.1` has postfix `1`
+- ultilites_ip: is the ip used for ultilites site
 
 **Synced folders:** Is a list of folders from local machine to be synced with VM
 
