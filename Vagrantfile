@@ -3,7 +3,7 @@
 #======================================
 # Lamp-Vagrant
 # @author : HR
-# @version : 0.1.1
+# @version : 0.1.2
 # @copyright : Dumday (c) 2017
 #======================================
 require_relative "include/LampVagrant"
@@ -51,18 +51,17 @@ Vagrant.configure("2") do |config|
 
       # Create a private network, which allows host-only access to the machine
       # using a specific IP.
-      # machine.vm.network "private_network", ip: "#{ip_prefix}.254"
+      # machine.vm.network "private_network", ip: "192.168.1.100"
 
       # Using ip
-      hosts = {}
       private_network_ips = settings["private_network_ips"]
       unless private_network_ips.nil?
-        private_network_ips.each do |ip_last_number, host_name|
+        private_network_ips.each do |ip_last_number, hostname|
           ip = "#{ip_prefix}.#{ip_last_number}"
           machine.vm.network "private_network", ip: ip
-          unless host_name.nil?
-            puts "* #{machine_name}: Using custom private ip #{ip} for #{host_name}"
-            hosts[ip] = [host_name]
+          unless hostname.nil?
+            puts "* #{machine_name}: Using custom private ip #{ip} for #{hostname}"
+            machine.vm.hostname = hostname # May require vagrant-hostsupdater for /etc/hosts auto updated
           else
             puts "* #{machine_name}: Using custom private ip #{ip}"
           end
@@ -75,15 +74,6 @@ Vagrant.configure("2") do |config|
         puts "* #{machine_name}: Using private ip #{ip} for ultilities"
         machine.vm.network "private_network", ip: ip
       end
-
-      # unless machine.multihostsupdater.nil?
-      #   machine.multihostsupdater.aliases = hosts
-      #   machine.multihostsupdater.remove_on_suspend = true
-      # end
-
-      # machine.hostmanager.enabled = true
-      # machine.hostmanager.manage_host = true
-      # machine.hostmanager.aliases = %w(millionet.dev)
 
       # Create a public network, which generally matched to bridged network.
       # Bridged networks make the machine appear as another physical device on
