@@ -187,8 +187,6 @@ Vagrant.configure("2") do |config|
             lv = LampVagrant.init(machine_name)
             command = lv.command
             require_relative File.join(".", "provision", "scripts", "install-apache2-sites.rb")
-            # puts command.to_array
-            # exit
             s.inline = command.get
           end
         end

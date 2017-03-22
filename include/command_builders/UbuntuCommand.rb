@@ -29,19 +29,4 @@ class UbuntuCommand < BaseCommand
   def clean_up (params = '-qq')
     "apt-get #{params} autoremove >/dev/null 2>/dev/null"
   end
-
-  # Stop a service
-  def start_service (service_name)
-    "service #{service_name} stop"
-  end
-
-  # Start a service
-  def start_service (service_name)
-    "service #{service_name} start"
-  end
-
-  # Restart a service
-  def restart_service (service_name)
-    "service #{service_name} restart"
-  end
 end

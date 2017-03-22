@@ -203,4 +203,34 @@ class BaseCommand
   def resolve_packages(package_names)
     package_names
   end
+
+  # Stop a service
+  def stop_service (service_name)
+    resolved_service_name = resolve_packages(service_name)
+    "service #{resolved_service_name} stop"
+  end
+
+  # Start a service
+  def start_service (service_name)
+    resolved_service_name = resolve_packages(service_name)
+    "service #{resolved_service_name} start"
+  end
+
+  # Restart a service
+  def restart_service (service_name)
+    resolved_service_name = resolve_packages(service_name)
+    "service #{resolved_service_name} restart"
+  end
+
+  # Clean up apts
+  def clean_up (params = '-qq')
+  end
+
+  # Update apts
+  def update (params = '-qq')
+  end
+
+  # Upgrade apts
+  def upgrade (params = '-qq')
+  end
 end

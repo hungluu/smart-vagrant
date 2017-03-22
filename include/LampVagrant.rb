@@ -6,6 +6,7 @@
 require "yaml"
 require_relative "command_builders/UbuntuCommand"
 require_relative "CentosMergedCommand"
+require_relative "ServicesLoader"
 #======================================
 class LampVagrant
   ########################
@@ -42,39 +43,25 @@ class LampVagrant
     end
   end
 
+  # Return current os
   def os
     @settings["os"]
   end
 
+  # Return current version
   def version
     @settings["version"]
   end
 
+  # Get command
   def command
     @command
   end
 
+  # Get current settings
   def settings
     @settings
   end
-
-  def apache2_restart
-    case os
-    when "centos"
-      command.push(command.restart_service("httpd"))
-    else
-      command.push(command.restart_service("apache2"))
-    end
-  end
-
-  # def apache2_enable_site(site_name)
-  #   case os
-  #   when "centos"
-  #     command.push("sudo ln /etc/httpd/sites-available")
-  #   else
-  #     command.push("service apache2 restart")
-  #   end
-  # end
 
   def require_apt_repo(repo_name)
     repositories = @settings['repositories']
