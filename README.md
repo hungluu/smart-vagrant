@@ -60,6 +60,7 @@ All configuration should be placed in `config/default.yaml` file
 - ultilites_ip: is the ip used for ultilites site
 
 **Synced folders:** Is a list of folders from local machine to be synced with VM
+**Scripts:** A list of script file to be run after all dependencies installed
 
 ### 3. Other settings
 
@@ -91,6 +92,38 @@ xdebug.max_nesting_level=300
 - Fill `path/to/lamp-vagrant/html/test` in **Project Path**
 - Save
 
+### 5. Override scripts
+To override an installation script for specified package, example `apache2`, create `install_apache2.rb` or `install_apache2.sh` in `scripts` folder.
+To override an installation script for specified repo, example `php5`, create `add_repo_php5.rb` or `add_repo_php5.sh` in `scripts` folder.
+To add a new script or simply provide existing ones, example `install-apache2-sites`, create `<script_name>.rb` or `<script_name>.sh` in `scripts` folder then add it to [**scripts**](#2-configuration) directive of your config file.
+See next chapter to get how to write your own provisioning scripts with Lamp Vagrant.
+
+### 6. Write your own provisioning scripts
+`.sh` file will be treated as shell file, its contents will be pushed into command stack.
+`.rb` file is a Ruby script and can use the command helpers provided by Lamp Vagrant command builders (document coming soon).
+
+```ruby
+// provision/install/install_php5.6-postgre9.5.rb
+// Installing postgresql 9.5 for php 5.6
+lv = LampVagrant.instance
+command = lv.command
+case lv.os
+when "centos"
+  lv.require_apt_repo("postgre9.5")
+  package_list = ["postgresql95-server", "postgresql95", "php5.6-pgsql"]
+  lv.push_install_message(["Postgresql 9.5 For PHP 5.6"])
+  lv.push_install_message(package_list, 1)
+  command.push(command.install(package_list))
+  command.push("/usr/pgsql-9.5/bin/postgresql95-setup initdb")
+  command.push(command.start_service("postgresql-9.5"))
+else
+  lv.require_apt_repo("postgre9.5")
+  package_list = ["postgresql-9.5", "php5.6-pgsql"]
+  lv.push_install_message(["Postgresql 9.5 For PHP 5.6"])
+  lv.push_install_message(package_list, 1)
+  command.push(command.install(package_list, "-qq --allow-unauthenticated"))
+end
+```
 
 Any contributions are welcomed and I am pleased to help you with all of your [issues](https://github.com/dumday/lamp-vagrant/issues).
 

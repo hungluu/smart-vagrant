@@ -125,21 +125,7 @@ Vagrant.configure("2") do |config|
       dependencies = settings["dependencies"]
       unless dependencies.nil?
         dependencies.each do |package_name|
-          install_script = File.join(".", "provision", "install", "install_#{package_name}")
-          custom_install_script = File.join(".", "scripts", "install_#{package_name}")
-          if File.file?("#{custom_install_script}.rb")
-            require_relative "#{custom_install_script}"
-          elsif File.file?("#{custom_install_script}.sh")
-            command.pushFile("#{custom_install_script}.sh")
-          elsif File.file?("#{install_script}.rb")
-            require_relative "#{install_script}"
-          elsif File.file?("#{install_script}.sh")
-            command.pushFile("#{install_script}.sh")
-          else
-            puts "* #{machine_name}: [Warning] No installation script found for '#{package_name}', using default command..."
-            lv.push_install_message([package_name])
-            command.push(command.install([package_name]))
-          end
+          lv.install_package(package_name)
         end
       end
 
@@ -162,21 +148,7 @@ Vagrant.configure("2") do |config|
         repositories = settings["repositories"]
         unless repositories.nil?
           repositories.each do |repository_name|
-            install_script = File.join(".", "provision", "apt-repo", "add_repo_#{repository_name}")
-            custom_install_script = File.join(".", "scripts", "add_repo_#{repository_name}")
-            if File.file?("#{custom_install_script}.rb") # custom add_repo_{name}.rb
-              require_relative "#{custom_install_script}"
-            elsif File.file?("#{custom_install_script}.sh") # custom add_repo_{name}.sh
-              command.pushFile("#{custom_install_script}.sh")
-            elsif File.file?("#{install_script}.rb") # add_repo_{name}.sh
-              command.pushFile("#{install_script}.sh")
-            elsif File.file?("#{install_script}.sh") # add_repo_{name}.sh
-              command.pushFile("#{install_script}.sh")
-            else
-              puts "* #{machine_name}: [Warning] No installation script found for repo '#{repository_name}', using default command..."
-              command.push_message("Adding apt-repo #{repository_name} ...")
-              command.push(command.add_repo(repository_name))
-            end
+            lv.install_apt_repo(repository_name)
           end
         end
 
@@ -184,7 +156,7 @@ Vagrant.configure("2") do |config|
       command.end_transaction
 
       if command.has_commands
-        machine.vm.provision "run-commands", type: "shell" do |s|
+        machine.vm.provision "install-dependencies", type: "shell" do |s|
           s.privileged = true
           # Build final command
           # puts command.to_array
@@ -192,15 +164,24 @@ Vagrant.configure("2") do |config|
           s.inline = command.get
         end
 
-        if dependencies.is_a?(Array) && dependencies.include?("apache2")
-          machine.vm.provision "install-apache2-sites", type: "shell", run: "always" do |s|
-            s.privileged = true
-            # Build final command
-            lv = LampVagrant.init(machine_name)
-            command = lv.command
-            require_relative File.join(".", "provision", "scripts", "install-apache2-sites.rb")
-            s.inline = command.get
+        lv = LampVagrant.init(machine_name)
+        command = lv.command
+
+        # Run all scripts
+        scripts = settings["scripts"]
+        unless scripts.nil?
+          scripts.each do |script_name|
+            lv.run_script(script_name)
           end
+        end
+
+        if dependencies.is_a?(Array) && dependencies.include?("apache2")
+          lv.run_script("install-apache2-sites")
+        end
+        machine.vm.provision "run-scripts", type: "shell", run: "always" do |s|
+          s.privileged = true
+          # Build final command
+          s.inline = command.get
         end
       else
         puts "* #{machine_name}: [Warning] No command to run"

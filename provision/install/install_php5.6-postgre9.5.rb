@@ -15,7 +15,7 @@ when "centos"
   command.push("/usr/pgsql-9.5/bin/postgresql95-setup initdb")
   command.push(command.start_service("postgresql-9.5"))
 else
-  lv.require_apt_repo("postgresql9.5")
+  lv.require_apt_repo("postgre9.5")
   package_list = ["postgresql-9.5", "php5.6-pgsql"]
   lv.push_install_message(["Postgresql 9.5 For PHP 5.6"])
   lv.push_install_message(package_list, 1)
