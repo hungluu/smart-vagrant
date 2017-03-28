@@ -100,7 +100,7 @@ See next chapter to get how to write your own provisioning scripts with Lamp Vag
 
 ### 6. Write your own provisioning scripts
 `.sh` file will be treated as shell file, its contents will be pushed into command stack.
-`.rb` file is a Ruby script and can use the command helpers provided by Lamp Vagrant command builders (document coming soon).
+`.rb` file is a Ruby script and can use the command helpers provided by Lamp Vagrant multi-OS command builders (document coming soon).
 
 ```ruby
 lv = LampVagrant.instance

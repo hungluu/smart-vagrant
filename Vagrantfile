@@ -3,7 +3,7 @@
 #======================================
 # Lamp-Vagrant
 # @author : HR
-# @version : 0.1.2
+# @version : 0.1.3
 # @copyright : Dumday (c) 2017
 #======================================
 require_relative File.join(".", "provision", "include", "LampVagrant")
