@@ -126,11 +126,17 @@ Vagrant.configure("2") do |config|
       unless dependencies.nil?
         dependencies.each do |package_name|
           install_script = File.join(".", "provision", "install", "install_#{package_name}")
-          if File.file?("#{install_script}.rb")
+          custom_install_script = File.join(".", "scripts", "install_#{package_name}")
+          if File.file?("#{custom_install_script}.rb")
+            require_relative "#{custom_install_script}"
+          elsif File.file?("#{custom_install_script}.sh")
+            command.pushFile("#{custom_install_script}.sh")
+          elsif File.file?("#{install_script}.rb")
             require_relative "#{install_script}"
           elsif File.file?("#{install_script}.sh")
             command.pushFile("#{install_script}.sh")
           else
+            puts "* #{machine_name}: [Warning] No installation script found for '#{package_name}', using default command..."
             lv.push_install_message([package_name])
             command.push(command.install([package_name]))
           end
@@ -157,11 +163,17 @@ Vagrant.configure("2") do |config|
         unless repositories.nil?
           repositories.each do |repository_name|
             install_script = File.join(".", "provision", "apt-repo", "add_repo_#{repository_name}")
-            if File.file?("#{install_script}.rb")
-              require_relative "#{install_script}"
-            elsif File.file?("#{install_script}.sh")
+            custom_install_script = File.join(".", "scripts", "add_repo_#{repository_name}")
+            if File.file?("#{custom_install_script}.rb") # custom add_repo_{name}.rb
+              require_relative "#{custom_install_script}"
+            elsif File.file?("#{custom_install_script}.sh") # custom add_repo_{name}.sh
+              command.pushFile("#{custom_install_script}.sh")
+            elsif File.file?("#{install_script}.rb") # add_repo_{name}.sh
+              command.pushFile("#{install_script}.sh")
+            elsif File.file?("#{install_script}.sh") # add_repo_{name}.sh
               command.pushFile("#{install_script}.sh")
             else
+              puts "* #{machine_name}: [Warning] No installation script found for repo '#{repository_name}', using default command..."
               command.push_message("Adding apt-repo #{repository_name} ...")
               command.push(command.add_repo(repository_name))
             end

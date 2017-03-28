@@ -1,7 +1,4 @@
 - apache2
-- php5
 - php5.6
-- postgresql9.3-php5
-- postgresql9.5-php5
-- postgresql9.5-php5.6
-- xdebug-php5
+- php5.6-xdebug
+- php5.6-postgre9.5
