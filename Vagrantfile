@@ -6,8 +6,8 @@
 # @version : 0.1.2
 # @copyright : Dumday (c) 2017
 #======================================
-require_relative "include/LampVagrant"
-require_relative "config/Providers"
+require_relative File.join(".", "provision", "include", "LampVagrant")
+require_relative File.join(".", "config", "Providers")
 ssh_port = 2400
 
 # All Vagrant configuration is done below. The "2" in Vagrant.configure
@@ -84,8 +84,8 @@ Vagrant.configure("2") do |config|
       # the path on the host to the actual folder. The second argument is
       # the path on the guest to mount the folder. And the optional third
       # argument is a set of non-required options.
-      machine.vm.synced_folder '.', '/vagrant', disabled: true
-      machine.vm.synced_folder '.', '/lamp-vagrant'
+      machine.vm.synced_folder ".", "/vagrant", disabled: true
+      machine.vm.synced_folder ".", "/lamp-vagrant"
       # machine.vm.synced_folder "./config/apache2/sites", "/etc/apache2/sites-available"
       synced_folders = settings["synced_folders"]
       unless synced_folders.nil?
@@ -94,7 +94,7 @@ Vagrant.configure("2") do |config|
           machine.vm.synced_folder local_path, vm_path , mount_options: ["dmode=775", "fmode=664"]
         end
       end
-      machine.vm.synced_folder './config/ultilities', '/var/www/ultilities' , mount_options: ["dmode=775", "fmode=664"]
+      machine.vm.synced_folder File.join(".", "config", "ultilities"), "/var/www/ultilities" , mount_options: ["dmode=775", "fmode=664"]
 
       # Provider-specific configuration so you can fine-tune various
       # backing providers for Vagrant. These expose provider-specific options.
@@ -112,7 +112,7 @@ Vagrant.configure("2") do |config|
       #   push.app = "YOUR_ATLAS_USERNAME/YOUR_APPLICATION_NAME"
       # end
 
-      require_relative "provision/provision"
+      require_relative File.join(".", "provision", "provision")
       ########################
       # INSTALL DEPENDENCIES #
       ########################
@@ -156,7 +156,7 @@ Vagrant.configure("2") do |config|
         end
       end
       # Every scripts after done provisioning should be placed in this file
-      require_relative "provision/provision-post"
+      require_relative File.join(".", "provision", "provision-post")
 
       command.begin_transaction
         repositories = settings["repositories"]
