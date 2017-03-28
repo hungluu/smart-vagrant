@@ -7,7 +7,6 @@
 lv = LampVagrant.instance
 command = lv.command
 lv.push_install_message(["Apache 2"])
-
 command.push(command.install(["apache2"]))
 case lv.os
 when "centos"

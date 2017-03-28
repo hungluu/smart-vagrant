@@ -12,6 +12,7 @@ case lv.os
 when "centos"
   package_list = ["php5.6", "php5.6-opcache", "php5.6-mcrypt", "php5.6-mbstring", "php5.6-pdo"]
   lv.push_install_message(package_list, 1)
+  # Install in packages we need
   command.push(command.install(package_list))
 else
   package_list = ["python-software-properties", "php5.6", "libapache2-mod-php5.6", "php5.6-opcache", "php5.6-mcrypt", "php5.6-mbstring", "php5.6-pdo"]
