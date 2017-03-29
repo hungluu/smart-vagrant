@@ -1,21 +1,29 @@
+#======================
+# Box specifications
+box_check_update : false
 box: "ubuntu/trusty64"
+#=====================
 # OS specifications
 os: "ubuntu"
 version: "14"
 subversion: "04"
-# Box specifications
-box_check_update : false
+#======================
 # Provider settings
+# Should be configured in config/Providers.rb
 provider: virtualbox
+#=====================
+# Dependencies settings
+#
+# Apt repo
 repositories:
+# Packages
 dependencies:
   - apache2
   - php5.6
   - php5.6-postgre9.5
   - php5.6-xdebug
   - php5.6-curl
-# Copy files
-copy:
+#=====================
 # Apache sites
 sites:
 #=================
@@ -24,6 +32,14 @@ ip_prefix: 1.1.0
 private_network_ips:
   - 100
 ultilities_ip: 254
+#=====================
+# Files and folders
+#
 # Synced folder
 synced_folders:
   "./html" : "/var/www/html"
+# List of files to copy
+copy:
+#======================
+# Custom scripts
+scripts:
