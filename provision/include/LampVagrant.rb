@@ -113,7 +113,7 @@ class LampVagrant
     elsif File.file?("#{custom_install_script}.sh") # custom add_repo_{name}.sh
       command.pushFile("#{custom_install_script}.sh")
     elsif File.file?("#{install_script}.rb") # add_repo_{name}.sh
-      command.pushFile("#{install_script}.sh")
+      require "#{install_script}"
     elsif File.file?("#{install_script}.sh") # add_repo_{name}.sh
       command.pushFile("#{install_script}.sh")
     else
