@@ -3,7 +3,7 @@
 #======================================
 # Lamp-Vagrant
 # @author : HR
-# @version : 0.1.3
+# @version : 0.1.4
 # @copyright : Dumday (c) 2017
 #======================================
 require_relative File.join(".", "provision", "include", "LampVagrant")
@@ -65,6 +65,15 @@ Vagrant.configure("2") do |config|
           else
             puts "* #{machine_name}: Using custom private ip #{ip}"
           end
+        end
+      end
+
+      public_network_ips = settings["public_network_ips"]
+      unless public_network_ips.nil?
+        public_network_ips.each do |ip_last_number|
+          ip = "#{ip_last_number}"
+          machine.vm.network "public_network", ip: ip
+          puts "* #{machine_name}: Using custom public ip #{ip}"
         end
       end
 

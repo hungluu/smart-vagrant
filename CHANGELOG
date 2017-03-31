@@ -1,4 +1,5 @@
-0.1.3 Support overrided scripts, move all main provisioning functionality into LampVagrant
+0.1.4 Support public network IP
+0.1.3 Support overridden scripts, move all main provisioning functionality into core class
 0.1.2 Support hosts file updater
 0.1.1 Centos and Ubuntu boxes can run in parallel and contact with each other
 0.1.0 Prepare for multi OS environment, remove unused files, add apt-repo auto injection
