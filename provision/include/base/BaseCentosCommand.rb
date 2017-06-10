@@ -5,7 +5,7 @@
 # Command builder
 require_relative "BaseCommand"
 
-class CentosCommand < BaseCommand
+class BaseCentosCommand < BaseCommand
   ######################
   # Command generators #
   ######################

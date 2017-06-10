@@ -5,7 +5,7 @@
 # Command builder
 require_relative "BaseCommand"
 
-class UbuntuCommand < BaseCommand
+class BaseUbuntuCommand < BaseCommand
   ######################
   # Command generators #
   ######################

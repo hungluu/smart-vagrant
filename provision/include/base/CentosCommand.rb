@@ -3,9 +3,9 @@
 # @copyright : Hung Luu (c) 2017
 #======================================
 # Command builder
-require_relative "command_builders/CentosCommand"
+require_relative "BaseCentosCommand"
 
-class CentosMergedCommand < CentosCommand
+class CentosCommand < BaseCentosCommand
   # Resolve packages from ubuntu to centos
   def resolve_packages(package_names)
     package_names

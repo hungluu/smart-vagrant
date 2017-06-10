@@ -1,2 +1,2 @@
-require_relative "service_command_builders/Apache2"
-require_relative "service_command_builders/Composer"
+require_relative "services/Apache2"
+require_relative "services/Composer"

@@ -4,8 +4,8 @@
 #======================================
 # Command builder
 require "yaml"
-require_relative "command_builders/UbuntuCommand"
-require_relative "CentosMergedCommand"
+require_relative "base/UbuntuCommand"
+require_relative "base/CentosCommand"
 require_relative "ServicesLoader"
 #======================================
 class SweetVagrant
@@ -40,7 +40,7 @@ class SweetVagrant
 
     @command = case os
       when "ubuntu" then UbuntuCommand.new
-      else CentosMergedCommand.new
+      else CentosCommand.new
     end
   end
 
