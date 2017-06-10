@@ -1,13 +1,13 @@
 #======================================
-# Lamp-Vagrant
-# @copyright : Dumday (c) 2017
+# Sweet-Vagrant
+# @copyright : Hung Luu (c) 2017
 #======================================
-lv = LampVagrant.instance
+lv = SweetVagrant.instance
 command = lv.command
 # Hide tty warning
 first_commands = [
   command.echo("====================================="),
-  command.echo("WELCOME TO %s <Provisioner>", ["Lamp-Vagrant"]),
+  command.echo("WELCOME TO %s <Provisioner>", ["Sweet-Vagrant"]),
   command.echo("====================================="),
   command.echo("* Checking dependencies ...")
 ]

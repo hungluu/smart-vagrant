@@ -1,9 +1,9 @@
 #======================================
-# Lamp-Vagrant
+# Sweet-Vagrant
 # @author : HR
-# @copyright : Dumday (c) 2017
+# @copyright : Hung Luu (c) 2017
 #======================================
-lv = LampVagrant.instance
+lv = SweetVagrant.instance
 command = lv.command
 command.push_message("Adding apt-repo for PHP ...")
 case lv.os

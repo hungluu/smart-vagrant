@@ -1,9 +1,9 @@
 #======================================
-# Lamp-Vagrant
+# Sweet-Vagrant
 # @author : HR
-# @copyright : Dumday (c) 2017
+# @copyright : Hung Luu (c) 2017
 #======================================
-lv = LampVagrant.instance
+lv = SweetVagrant.instance
 command = lv.command
 # Ensure postgresql 9.5 installable
 command.push_message("Adding apt-repo for postgresql 9.5 ...")

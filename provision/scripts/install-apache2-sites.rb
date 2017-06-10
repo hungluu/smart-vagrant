@@ -1,4 +1,4 @@
-lv = LampVagrant.instance
+lv = SweetVagrant.instance
 command = lv.command
 sites = lv.settings["sites"]
 apache2_site_folder = "/etc/" + command.resolve_packages("apache2") + "/sites-enabled/"
@@ -12,7 +12,7 @@ unless sites.nil?
   end
 end
 if lv.settings["use_ultilities"] === true
-  command.push(command.copy("/lamp-vagrant/config/ultilities/lamp-vagrant-ultilities.conf", "#{apache2_site_folder}lamp-vagrant-ultilities.conf"))
+  command.push(command.copy("/sweet-vagrant/config/ultilities/sweet-vagrant-ultilities.conf", "#{apache2_site_folder}sweet-vagrant-ultilities.conf"))
 end
 
 if lv.os === "centos"

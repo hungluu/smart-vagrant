@@ -1,10 +1,10 @@
-# LAMP Vagrant
+# Sweet Vagrant
 
-A LAMP stack with original Ubuntu / CentOS boxes for Vagrant that **just works and easy to customize**.
+A vagrant script bundle that make provisioning easier to customize and maintain. Just edit config file and vagrant up. Everything is done automatically.
 
-*Running with vagrant 1.9.1 and VirtualBox 5.1.14 r112924 (Qt5.6.2) Windows | Ubuntu 14.04*
+*Currently tested with CentOS (7) and Ubuntu (14.04) environments*
 
-*With example configuration file, Vagrant will install an Ubuntu 14.04 machine which contains Apache 2, PHP 5.6, Postgresql 9.5 and Xdebug*
+*With default example configuration file, Vagrant will install an Ubuntu 14.04 machine which contains Apache 2, PHP 5.6, Postgresql 9.5 and Xdebug*
 
 ### 1. Run
 
@@ -14,9 +14,9 @@ A LAMP stack with original Ubuntu / CentOS boxes for Vagrant that **just works a
 ```shell
 vagrant plugin install vagrant-vbguest
 ```
-- Clone this repository or download latest version [here](https://codeload.github.com/dumday/lamp-vagrant/zip/master)
+- Clone this repository or download latest version [here](https://codeload.github.com/hungluu2106/sweet-vagrant/zip/master)
 ```
-git clone https://github.com/dumday/lamp-vagrant.git
+git clone https://github.com/hungluu2106/sweet-vagrant.git
 ```
 - After clone this repository, rename `config/default.yaml.example` to `config/default.yaml`
 
@@ -65,7 +65,7 @@ All configuration should be placed in `config/default.yaml` file
 ### 3. Other settings
 
 -	All sites settings are located in `config/apache2/sites`
--	Custom apache settings should be placed in `config/apache2/lamp-vagrant.conf`
+-	Custom apache settings should be placed in `config/apache2/sweet-vagrant.conf`
 - All provider settings should be edited in `config/Providers.rb`
 
 Other hack-around can be done with a little knowlegde of Vagrant, can be found in their [Vagrant document](https://www.vagrantup.com/docs/).
@@ -89,7 +89,7 @@ xdebug.max_nesting_level=300
 
 - Open project properties in netbeans, in tab `Run Configuration` change **Project URL** to `http://1.1.0.100`
 - Click `Advanced`, then `Do not open web browser`, in **server path** fill `/var/www/html/test/`
-- Fill `path/to/lamp-vagrant/html/test` in **Project Path**
+- Fill `path/to/sweet-vagrant/html/test` in **Project Path**
 - Save
 
 ### 5. Override scripts
@@ -103,7 +103,7 @@ See next chapter to get how to write your own provisioning scripts with Lamp Vag
 `.rb` file is a Ruby script and can use the command helpers provided by Lamp Vagrant multi-OS command builders (document coming soon).
 
 ```ruby
-lv = LampVagrant.instance
+lv = SweetVagrant.instance
 command = lv.command
 # require apt repo for postgresql 9.5
 lv.require_apt_repo("postgre9.5")
@@ -131,7 +131,7 @@ else
 end
 ```
 
-Any contributions are welcomed and I am pleased to help you with all of your [issues](https://github.com/dumday/lamp-vagrant/issues).
+Any contributions are welcomed and I am pleased to help you with all of your [issues](https://github.com/hungluu2106/sweet-vagrant/issues).
 
 Best regards,
 Hung.

@@ -1,11 +1,11 @@
 #======================================
-# Lamp-Vagrant
+# Sweet-Vagrant
 # @author : HR
-# @copyright : Dumday (c) 2017
+# @copyright : Hung Luu (c) 2017
 #======================================
 # provision/install/install_php5.6-postgre9.5.rb
 # Installing postgresql 9.5 for php 5.6
-lv = LampVagrant.instance
+lv = SweetVagrant.instance
 command = lv.command
 # require apt repo for postgresql 9.5
 lv.require_apt_repo("postgre9.5")

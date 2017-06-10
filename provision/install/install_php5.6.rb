@@ -1,10 +1,10 @@
 #======================================
-# Lamp-Vagrant
+# Sweet-Vagrant
 # @author : HR
-# @copyright : Dumday (c) 2017
+# @copyright : Hung Luu (c) 2017
 #======================================
 # Install php5.6
-lv = LampVagrant.instance
+lv = SweetVagrant.instance
 command = lv.command
 lv.require_apt_repo("php")
 lv.push_install_message(["PHP 5.6"])

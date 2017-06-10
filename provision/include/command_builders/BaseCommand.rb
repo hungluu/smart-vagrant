@@ -1,6 +1,6 @@
 #======================================
-# Lamp-Vagrant
-# @copyright : Dumday (c) 2017
+# Sweet-Vagrant
+# @copyright : Hung Luu (c) 2017
 #======================================
 # Command builder
 class BaseCommand

@@ -1,6 +1,6 @@
 #======================================
-# Lamp-Vagrant
-# @copyright : Dumday (c) 2017
+# Sweet-Vagrant
+# @copyright : Hung Luu (c) 2017
 #======================================
 # Command builder
 require "yaml"
@@ -8,9 +8,9 @@ require_relative "command_builders/UbuntuCommand"
 require_relative "CentosMergedCommand"
 require_relative "ServicesLoader"
 #======================================
-class LampVagrant
+class SweetVagrant
   ########################
-  # Lamp-Vagrant Helpers #
+  # Sweet-Vagrant Helpers #
   ########################
   # Create a shared command for files
   def self.init(machine_name)
@@ -166,7 +166,7 @@ class LampVagrant
     else
       dest_path = "/#{dest_path}"
     end
-    vm_source_path = "/lamp-vagrant/config/copy/#{source_path}"
+    vm_source_path = "/sweet-vagrant/config/copy/#{source_path}"
     command.push_message("Copying %s ...", [dest_path])
     command.push(
       command.make_if(command.check_file_existence(vm_source_path),

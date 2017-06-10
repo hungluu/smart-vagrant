@@ -1,10 +1,10 @@
 #======================================
-# Lamp-Vagrant
+# Sweet-Vagrant
 # @author : HR
-# @copyright : Dumday (c) 2017
+# @copyright : Hung Luu (c) 2017
 #======================================
 # Install Composer
-lv = LampVagrant.instance
+lv = SweetVagrant.instance
 command = lv.command
 
 lv.require_package('php5.6')
