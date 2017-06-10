@@ -1,12 +1,12 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 #======================================
-# Sweet-Vagrant
+# Smart-Vagrant
 # @author : HR
 # @version : 0.1.4
 # @copyright : Hung Luu (c) 2017
 #======================================
-require_relative File.join(".", "provision", "include", "SweetVagrant")
+require_relative File.join(".", "provision", "include", "SmartVagrant")
 require_relative File.join(".", "config", "Providers")
 ssh_port = 2400
 
@@ -24,7 +24,7 @@ Vagrant.configure("2") do |config|
       machine.vm.network :forwarded_port, guest: 22, host: 2222, id: "ssh", disabled: true
       machine.vm.network :forwarded_port, guest: 22, host: ssh_port, auto_correct: true
 
-      lv = SweetVagrant.init(machine_name)
+      lv = SmartVagrant.init(machine_name)
       command = lv.command
       # Load configuration
       settings = lv.settings
@@ -94,7 +94,7 @@ Vagrant.configure("2") do |config|
       # the path on the guest to mount the folder. And the optional third
       # argument is a set of non-required options.
       machine.vm.synced_folder ".", "/vagrant", disabled: true
-      machine.vm.synced_folder ".", "/sweet-vagrant"
+      machine.vm.synced_folder ".", "/smart-vagrant"
       # machine.vm.synced_folder "./config/apache2/sites", "/etc/apache2/sites-available"
       synced_folders = settings["synced_folders"]
       unless synced_folders.nil?
@@ -173,7 +173,7 @@ Vagrant.configure("2") do |config|
           s.inline = command.get
         end
 
-        lv = SweetVagrant.init(machine_name)
+        lv = SmartVagrant.init(machine_name)
         command = lv.command
 
         # Run all scripts

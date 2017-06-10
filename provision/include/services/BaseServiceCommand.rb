@@ -1,6 +1,6 @@
 class BaseServiceCommand
   def self.sweet
-    return SweetVagrant.instance
+    return SmartVagrant.instance
   end
 
   def self.command

@@ -1,5 +1,5 @@
 #======================================
-# Sweet-Vagrant
+# Smart-Vagrant
 # @copyright : Hung Luu (c) 2017
 #======================================
 # Command builder

@@ -1,13 +1,13 @@
 #======================================
-# Sweet-Vagrant
+# Smart-Vagrant
 # @copyright : Hung Luu (c) 2017
 #======================================
-lv = SweetVagrant.instance
+lv = SmartVagrant.instance
 command = lv.command
 # Hide tty warning
 first_commands = [
   command.echo("====================================="),
-  command.echo("WELCOME TO %s <Provisioner>", ["Sweet-Vagrant"]),
+  command.echo("WELCOME TO %s <Provisioner>", ["Smart-Vagrant"]),
   command.echo("====================================="),
   command.echo("* Checking dependencies ...")
 ]

@@ -14,9 +14,9 @@ A vagrant script bundle that make provisioning easier to customize and maintain.
 ```shell
 vagrant plugin install vagrant-vbguest
 ```
-- Clone this repository or download latest version [here](https://codeload.github.com/hungluu2106/sweet-vagrant/zip/master)
+- Clone this repository or download latest version [here](https://codeload.github.com/hungluu2106/smart-vagrant/zip/master)
 ```
-git clone https://github.com/hungluu2106/sweet-vagrant.git
+git clone https://github.com/hungluu2106/smart-vagrant.git
 ```
 - After clone this repository, rename `config/default.yaml.example` to `config/default.yaml`
 
@@ -65,7 +65,7 @@ All configuration should be placed in `config/default.yaml` file
 ### 3. Other settings
 
 -	All sites settings are located in `config/apache2/sites`
--	Custom apache settings should be placed in `config/apache2/sweet-vagrant.conf`
+-	Custom apache settings should be placed in `config/apache2/smart-vagrant.conf`
 - All provider settings should be edited in `config/Providers.rb`
 
 Other hack-around can be done with a little knowlegde of Vagrant, can be found in their [Vagrant document](https://www.vagrantup.com/docs/).
@@ -89,7 +89,7 @@ xdebug.max_nesting_level=300
 
 - Open project properties in netbeans, in tab `Run Configuration` change **Project URL** to `http://1.1.0.100`
 - Click `Advanced`, then `Do not open web browser`, in **server path** fill `/var/www/html/test/`
-- Fill `path/to/sweet-vagrant/html/test` in **Project Path**
+- Fill `path/to/smart-vagrant/html/test` in **Project Path**
 - Save
 
 ### 5. Override scripts
@@ -103,7 +103,7 @@ See next chapter to get how to write your own provisioning scripts with Lamp Vag
 `.rb` file is a Ruby script and can use the command helpers provided by Lamp Vagrant multi-OS command builders (document coming soon).
 
 ```ruby
-lv = SweetVagrant.instance
+lv = SmartVagrant.instance
 command = lv.command
 # require apt repo for postgresql 9.5
 lv.require_apt_repo("postgre9.5")
@@ -131,7 +131,7 @@ else
 end
 ```
 
-Any contributions are welcomed and I am pleased to help you with all of your [issues](https://github.com/hungluu2106/sweet-vagrant/issues).
+Any contributions are welcomed and I am pleased to help you with all of your [issues](https://github.com/hungluu2106/smart-vagrant/issues).
 
 Best regards,
 Hung.

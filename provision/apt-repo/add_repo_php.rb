@@ -1,9 +1,9 @@
 #======================================
-# Sweet-Vagrant
+# Smart-Vagrant
 # @author : HR
 # @copyright : Hung Luu (c) 2017
 #======================================
-lv = SweetVagrant.instance
+lv = SmartVagrant.instance
 command = lv.command
 command.push_message("Adding apt-repo for PHP ...")
 case lv.os

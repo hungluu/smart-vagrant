@@ -1,5 +1,5 @@
 #======================================
-# Sweet-Vagrant
+# Smart-Vagrant
 # @copyright : Hung Luu (c) 2017
 #======================================
 # Command builder
@@ -8,9 +8,9 @@ require_relative "base/UbuntuCommand"
 require_relative "base/CentosCommand"
 require_relative "ServicesLoader"
 #======================================
-class SweetVagrant
+class SmartVagrant
   ########################
-  # Sweet-Vagrant Helpers #
+  # Smart-Vagrant Helpers #
   ########################
   # Create a shared command for files
   def self.init(machine_name)
@@ -166,7 +166,7 @@ class SweetVagrant
     else
       dest_path = "/#{dest_path}"
     end
-    vm_source_path = "/sweet-vagrant/config/copy/#{source_path}"
+    vm_source_path = "/smart-vagrant/config/copy/#{source_path}"
     command.push_message("Copying %s ...", [dest_path])
     command.push(
       command.make_if(command.check_file_existence(vm_source_path),

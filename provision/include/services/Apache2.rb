@@ -23,6 +23,6 @@ class Apache2 < BaseServiceCommand
   # Enable site
   def self.enable_site(site_name)
     apache2_folder = command.resolve_packages("apache2")
-    command.push(command.copy("/sweet-vagrant/config/apache2/sites/#{site_name}.conf", "/etc/#{apache2_folder}/sites-enabled/#{site_name}.conf"))
+    command.push(command.copy("/smart-vagrant/config/apache2/sites/#{site_name}.conf", "/etc/#{apache2_folder}/sites-enabled/#{site_name}.conf"))
   end
 end

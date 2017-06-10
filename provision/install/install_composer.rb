@@ -1,10 +1,10 @@
 #======================================
-# Sweet-Vagrant
+# Smart-Vagrant
 # @author : HR
 # @copyright : Hung Luu (c) 2017
 #======================================
 # Install Composer
-lv = SweetVagrant.instance
+lv = SmartVagrant.instance
 command = lv.command
 
 lv.require_package('php5.6')

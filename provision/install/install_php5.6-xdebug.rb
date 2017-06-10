@@ -1,8 +1,8 @@
 #======================================
-# Sweet-Vagrant
+# Smart-Vagrant
 # @copyright : Hung Luu (c) 2017
 #======================================
-lv = SweetVagrant.instance
+lv = SmartVagrant.instance
 command = lv.command
 lv.push_install_message(["Xdebug for PHP 5.6"])
 # Ensure xdebug directory exists
