@@ -18,7 +18,7 @@ dependencies:
 copy:
 # Apache sites
 sites:
-  - millionet
+  - test
 #=================
 # IP settings
 ip_prefix: 1.1.0
@@ -26,4 +26,4 @@ private_network_ips:
   - 100
 # Synced folder
 synced_folders:
-  "../" : "/var/www/html"
+  "./html" : "/var/www/html"
