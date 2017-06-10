@@ -1,9 +1,9 @@
 class BaseServiceCommand
-  def self.lv
+  def self.sweet
     return SweetVagrant.instance
   end
 
   def self.command
-    return SweetVagrant.instance.command
+    return sweet.command
   end
 end
