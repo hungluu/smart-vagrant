@@ -27,3 +27,8 @@ config/apache2/sites/*
 scripts/*
 !scripts/.gitkeep
 # End Custom Scripts Section
+
+# Avoid pushing plugins to git
+plugins/*
+!plugins/.gitkeep
+# End Avoid pushing plugins to git
