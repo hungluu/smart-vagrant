@@ -130,6 +130,15 @@ Vagrant.configure("2") do |config|
       command.push_message("Updating packages, please wait...")
       command.push(command.update)
 
+      require_relative "provision/packages/Apache2"
+      require_relative "provision/packages/Php"
+      test = SmartVagrantPackage::Apache2.new(lv)
+      test.do_install
+      test = SmartVagrantPackage::Php.new(lv)
+      test.do_install
+      puts command.to_array
+      exit
+
       # Install required packages by scripts
       dependencies = settings["dependencies"]
       unless dependencies.nil?
