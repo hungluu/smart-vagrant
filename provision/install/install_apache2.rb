@@ -4,7 +4,7 @@
 # @copyright : Hung Luu (c) 2017
 #======================================
 # Install Apache 2
-lv = SmartVagrant.instance
+lv = SmartVagrant::SmartVagrant.instance
 command = lv.command
 lv.push_install_message(["Apache 2"])
 command.push(command.install(["apache2"]))

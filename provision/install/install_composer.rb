@@ -4,7 +4,7 @@
 # @copyright : Hung Luu (c) 2017
 #======================================
 # Install Composer
-lv = SmartVagrant.instance
+lv = SmartVagrant::SmartVagrant.instance
 command = lv.command
 
 lv.require_package('php5.6')

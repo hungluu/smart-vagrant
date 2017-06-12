@@ -5,7 +5,7 @@
 #======================================
 # provision/install/install_php5.6-postgre9.5.rb
 # Installing postgresql 9.5 for php 5.6
-lv = SmartVagrant.instance
+lv = SmartVagrant::SmartVagrant.instance
 command = lv.command
 # require apt repo for postgresql 9.5
 lv.require_apt_repo("postgre9.5")

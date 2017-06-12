@@ -4,5 +4,11 @@
 #======================================
 require_relative "BaseUbuntuCommand"
 
-class UbuntuCommand < BaseUbuntuCommand
+module SmartVagrant
+  module Include
+    module Base
+      class UbuntuCommand < BaseUbuntuCommand
+      end
+    end
+  end
 end

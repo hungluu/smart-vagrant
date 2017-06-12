@@ -3,7 +3,7 @@
 # @author : HR
 # @copyright : Hung Luu (c) 2017
 #======================================
-lv = SmartVagrant.instance
+lv = SmartVagrant::SmartVagrant.instance
 command = lv.command
 command.push_message("Adding apt-repo for PHP ...")
 case lv.os

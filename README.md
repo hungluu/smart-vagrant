@@ -103,7 +103,7 @@ See next chapter to get how to write your own provisioning scripts with Lamp Vag
 `.rb` file is a Ruby script and can use the command helpers provided by Lamp Vagrant multi-OS command builders (document coming soon).
 
 ```ruby
-lv = SmartVagrant.instance
+lv = SmartVagrant::SmartVagrant.instance
 command = lv.command
 # require apt repo for postgresql 9.5
 lv.require_apt_repo("postgre9.5")

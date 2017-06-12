@@ -3,7 +3,7 @@
 # @author : HR
 # @copyright : Hung Luu (c) 2017
 #======================================
-lv = SmartVagrant.instance
+lv = SmartVagrant::SmartVagrant.instance
 command = lv.command
 # Ensure postgresql 9.5 installable
 command.push_message("Adding apt-repo for postgresql 9.5 ...")

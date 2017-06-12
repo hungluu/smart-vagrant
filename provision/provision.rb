@@ -2,7 +2,7 @@
 # Smart-Vagrant
 # @copyright : Hung Luu (c) 2017
 #======================================
-lv = SmartVagrant.instance
+lv = SmartVagrant::SmartVagrant.instance
 command = lv.command
 # Hide tty warning
 first_commands = [

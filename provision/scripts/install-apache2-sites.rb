@@ -1,4 +1,4 @@
-lv = SmartVagrant.instance
+lv = SmartVagrant::SmartVagrant.instance
 command = lv.command
 sites = lv.settings["sites"]
 apache2_site_folder = "/etc/" + command.resolve_packages("apache2") + "/sites-enabled/"

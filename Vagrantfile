@@ -6,7 +6,7 @@
 # @version : 0.1.4
 # @copyright : Hung Luu (c) 2017
 #======================================
-require_relative File.join(".", "provision", "include", "SmartVagrant")
+require_relative File.join(".", "provision", "SmartVagrant")
 require_relative File.join(".", "config", "Providers")
 ssh_port = 2400
 
@@ -24,7 +24,7 @@ Vagrant.configure("2") do |config|
       machine.vm.network :forwarded_port, guest: 22, host: 2222, id: "ssh", disabled: true
       machine.vm.network :forwarded_port, guest: 22, host: ssh_port, auto_correct: true
 
-      lv = SmartVagrant.init(machine_name)
+      lv = SmartVagrant::SmartVagrant.init(machine_name)
       command = lv.command
       # Load configuration
       settings = lv.settings
@@ -132,9 +132,9 @@ Vagrant.configure("2") do |config|
 
       require_relative "provision/packages/Apache2"
       require_relative "provision/packages/Php"
-      test = SmartVagrantPackage::Apache2.new(lv)
+      test = SmartVagrant::Packages::Apache2.new(lv)
       test.do_install
-      test = SmartVagrantPackage::Php.new(lv)
+      test = SmartVagrant::Packages::Php.new(lv)
       test.do_install
       puts command.to_array
       exit
