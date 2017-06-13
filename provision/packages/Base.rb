@@ -23,26 +23,14 @@ module SmartVagrant
       end
 
       attr_reader :version
+      attr_reader :config
+      attr_reader :smart
+      attr_reader :command
+      attr_reader :os
 
       def set_version(version)
         @version = version::to_s
         @self
-      end
-
-      def config
-        @config
-      end
-
-      def smart
-        @smart
-      end
-
-      def command
-        @command
-      end
-
-      def os
-        @os
       end
 
       def bind(package_name)
