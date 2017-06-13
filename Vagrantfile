@@ -24,10 +24,10 @@ Vagrant.configure("2") do |config|
       machine.vm.network :forwarded_port, guest: 22, host: 2222, id: "ssh", disabled: true
       machine.vm.network :forwarded_port, guest: 22, host: ssh_port, auto_correct: true
 
-      lv = SmartVagrant::SmartVagrant.init(machine_name)
-      command = lv.command
+      smart = SmartVagrant::SmartVagrant.init(machine_name)
+      command = smart.command
       # Load configuration
-      settings = lv.settings
+      settings = smart.settings
 
       ip_prefix = settings["ip_prefix"]
 
@@ -130,22 +130,9 @@ Vagrant.configure("2") do |config|
       command.push_message("Updating packages, please wait...")
       command.push(command.update)
 
-      require_relative "provision/packages/Apache2"
-      require_relative "provision/packages/Php"
-      test = SmartVagrant::Packages::Apache2.new(lv)
-      test.do_install
-      test = SmartVagrant::Packages::Php.new(lv)
-      test.do_install
-      puts command.to_array
-      exit
-
       # Install required packages by scripts
-      dependencies = settings["dependencies"]
-      unless dependencies.nil?
-        dependencies.each do |package_name|
-          lv.install_package(package_name)
-        end
-      end
+      packages = settings["packages"]
+      smart.install_package_list(packages)
 
       #####################
       #     COPY FILES    #
@@ -155,7 +142,7 @@ Vagrant.configure("2") do |config|
       unless copied_files.nil?
         copied_files.each do |dest_path|
           if File.file?(File.join("config", "copy", dest_path))
-            lv.queue_copy(dest_path)
+            smart.queue_copy(dest_path)
           end
         end
       end
@@ -166,7 +153,7 @@ Vagrant.configure("2") do |config|
         repositories = settings["repositories"]
         unless repositories.nil?
           repositories.each do |repository_name|
-            lv.install_apt_repo(repository_name)
+            smart.install_apt_repo(repository_name)
           end
         end
 
@@ -174,7 +161,7 @@ Vagrant.configure("2") do |config|
       command.end_transaction
 
       if command.has_commands
-        machine.vm.provision "install-dependencies", type: "shell" do |s|
+        machine.vm.provision "install-packages", type: "shell" do |s|
           s.privileged = true
           # Build final command
           # puts command.to_array
@@ -182,19 +169,19 @@ Vagrant.configure("2") do |config|
           s.inline = command.get
         end
 
-        lv = SmartVagrant.init(machine_name)
-        command = lv.command
+        lv = SmartVagrant::SmartVagrant.init(machine_name)
+        command = smart.command
 
         # Run all scripts
         scripts = settings["scripts"]
         unless scripts.nil?
           scripts.each do |script_name|
-            lv.run_script(script_name)
+            smart.run_script(script_name)
           end
         end
 
-        if dependencies.is_a?(Array) && dependencies.include?("apache2")
-          lv.run_script("install-apache2-sites")
+        if packages.is_a?(Array) && packages.include?("apache2")
+          smart.run_script("install-apache2-sites")
         end
         machine.vm.provision "run-scripts", type: "shell", run: "always" do |s|
           s.privileged = true

@@ -49,10 +49,14 @@ module SmartVagrant
       end
 
       def resolve(package_name)
-        Util.resolve(package_name)
+        smart.resolve_package(package_name)
       end
 
-      def require(package_name, package_version)
+      def require_repo(apt_repo)
+        smart.require_apt_repo(apt_repo)
+      end
+
+      def require_package(package_name, package_version)
         smart.require_package(package_name, package_version)
       end
 

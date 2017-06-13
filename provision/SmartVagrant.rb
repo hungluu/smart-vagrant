@@ -7,6 +7,7 @@ require "yaml"
 require_relative "include/base/UbuntuCommand"
 require_relative "include/base/CentosCommand"
 require_relative "include/ServicesLoader"
+require_relative "packages/Base"
 #======================================
 module SmartVagrant
   class SmartVagrant
@@ -93,13 +94,72 @@ module SmartVagrant
 
     # Try to resolve the package name to get the real package object
     # Arcording to plugins loading position
-    def resolve(package_name)
-      plugins.reverse.each plugin_name do
-        plugin_namespace = plugin_name
+    def resolve_package(package_name, package_dir = nil)
+      if package_dir != nil then
+        return resolve_package_in_directory(package_name, package_dir)
+      else
+        package_instance = nil
+
+        plugins.reverse.each do |plugin_name|
+          package_dir = File.join(".", "plugins", plugin_name, "provision", "packages")
+          package_instance = resolve_package_in_directory(package_name, package_dir)
+        end
+
+        if package_instance.nil?
+          package_dir = File.join(".", "provision", "packages")
+          package_instance = resolve_package_in_directory(package_name, package_dir)
+        end
+
+        return package_instance
       end
     end
 
+    def resolve_package_in_directory(package_name, package_dir)
+      begin
+        package_class_name  = package_name.capitalize
+        package_plugin_path = File.join(package_dir, package_class_name)
+
+        if File.file?(package_plugin_path + ".rb")
+          require package_plugin_path
+          className = resolve_package_class_name(package_plugin_path).inject(Object) {|o,c| o.const_get c}
+          return className.new(self)
+        end
+
+        return nil
+      rescue
+        return nil
+      end
+    end
+
+    def resolve_package_class_name(package_dir)
+      package_dir.sub('./', '').sub('provision/', '').split('/').reject { |slash_part| slash_part.empty? }.map { |slash_part| slash_part.split('-').map { |semicolon_part| semicolon_part.capitalize }.join('') }.unshift("SmartVagrant")
+    end
+
+    def self.require_package(base_package_name)
+      require "./provision/packages/" + base_package_name.to_s.capitalize + ".rb"
+    end
+
+    # Install package
     def install_package(package_name)
+      package_instance = resolve_package(package_name)
+
+      if package_instance.nil?
+        return install_package_by_script(package_name)
+      else
+        return package_instance.do_install
+      end
+    end
+
+    def install_package_list(packages)
+      unless packages.nil?
+        packages.each do |package_name|
+          install_package(package_name)
+        end
+      end
+    end
+
+    # Install package by script files (rb, sh)
+    def install_package_by_script(package_name)
       install_script = File.join(".", "provision", "install", "install_#{package_name}")
       custom_install_script = File.join(".", "scripts", "install_#{package_name}")
 

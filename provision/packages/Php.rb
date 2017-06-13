@@ -15,7 +15,7 @@ module SmartVagrant
       # init package
       def init
         # get config version
-        set_version(config["package_version"]["php"].to_s)
+        set_version(config["php"]["version"].to_s)
       end
 
       # resolve package
@@ -31,7 +31,7 @@ module SmartVagrant
 
       # install apache2
       def install
-        smart.require_apt_repo("php")
+        require_repo("php")
 
         php = package
 
