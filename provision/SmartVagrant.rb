@@ -100,9 +100,11 @@ module SmartVagrant
       else
         package_instance = nil
 
-        plugins.reverse.each do |plugin_name|
-          package_dir = File.join(".", "plugins", plugin_name, "provision", "packages")
-          package_instance = resolve_package_in_directory(package_name, package_dir)
+        unless plugins.nil?
+          plugins.reverse.each do |plugin_name|
+            package_dir = File.join(".", "plugins", plugin_name, "provision", "packages")
+            package_instance = resolve_package_in_directory(package_name, package_dir)
+          end
         end
 
         if package_instance.nil?

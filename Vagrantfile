@@ -169,7 +169,7 @@ Vagrant.configure("2") do |config|
           s.inline = command.get
         end
 
-        lv = SmartVagrant::SmartVagrant.init(machine_name)
+        smart = SmartVagrant::SmartVagrant.init(machine_name)
         command = smart.command
 
         # Run all scripts
@@ -179,7 +179,6 @@ Vagrant.configure("2") do |config|
             smart.run_script(script_name)
           end
         end
-
         if packages.is_a?(Array) && packages.include?("apache2")
           smart.run_script("install-apache2-sites")
         end
