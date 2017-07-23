@@ -29,6 +29,6 @@ scripts/*
 # End Custom Scripts Section
 
 # Avoid pushing plugins to git
-plugins/*
-!plugins/.gitkeep
+# plugins/*
+# !plugins/.gitkeep
 # End Avoid pushing plugins to git
